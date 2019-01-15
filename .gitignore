@@ -6,4 +6,8 @@ Forrasok/
 *.log
 *.gz
 *.toc
+*.bbl
+*.blg
+*.xml
+
 

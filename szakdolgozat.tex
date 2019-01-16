@@ -10,7 +10,10 @@
 \usepackage{graphicx}
 \usepackage{tabu}
 \usepackage{makecell}
+
 \usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
 
 \usepackage{tikz}
 \usetikzlibrary{positioning}
@@ -26,10 +29,10 @@
 {\bfseries{\thedefinicioszam. Definíció: #1\\[1ex]}}}{\bigskip }
 
 %számláló és formázás tételeknek: \begin{tetel}
-\newcounter{tetelszam}
+\newcounter{tszam}
 \newenvironment{tetel}[1]
 {{\medskip}\noindent \stepcounter{tszam}
-{\bfseries{\thetetelszam. Tétel: #1\\[1ex]}}}{\bigskip }
+{\bfseries{\thetszam. Tétel: #1\\[1ex]}}}{\bigskip }
 
 \begin{document}
 
@@ -107,9 +110,9 @@ A program és annak forráskódja is letölthető a következő oldalról:
 
 \section{Alapfogalmak és definíciók}
 
-\subsection{Linkek, web és a lógó oldalak}
+\subsection{Linkek, web és a lógó oldalak}\label{link_web_logooldal}
 
-Ahhoz hogy a PageRank algoritmust definiálhassam, először a web fogalmát kell bevezetni.
+Ahhoz hogy PageRankról beszélhessünk, először a web fogalmát kell bevezetni.
 
 \begin{definicio}{Linkhalmaz}
 	Legyen V a weboldalak halmaza. Ekkor $L \subset V \times V$ \textbf{linkhalmaz}ban $(v_1,v_2)$ ($v_1, v_2 \in V$ és $v_1 \ne v_2$) pontosan akkor van benne ha $v_1$ linkel $v_2$-re. 
@@ -140,11 +143,61 @@ Ahhoz hogy a PageRank algoritmust definiálhassam, először a web fogalmát kel
 	\caption{Egy 4 oldalból álló web}
 \end{figure}
 
-A linkhalmaz definíciójában lévő egyszerűsítő feltétel amely nem engedi, hogy egy oldal saját magára linkel, azért tehető meg, mert bár egy valós web esetén ez lehetséges, de a PageRank algoritmusba az ilyen típusú linkek nem számítanak bele, ez ugyanis lehetővé tenné, hogy egy oldal egyszerűen növelje a saját értékelését azzal, hogy sokszor linkel önmagára. 
+A linkhalmaz definíciójában lévő egyszerűsítő feltétel amely nem engedi, hogy egy oldal saját magára linkel, azért tehető meg, mert bár egy valós web esetén ez lehetséges, de a PageRank algoritmusba az ilyen típusú linkek nem számítanak bele, ez ugyanis lehetővé tenné, hogy egy oldal egyszerűen növelje a saját értékelését azzal, hogy sokszor linkel önmagára. Az ilyen linkeket ezért egyszerűen elhagyhatjuk.
 
-Előfordulhat olyan web, ahol bizonyos oldalakról nincsenek kimenő linkek. Az ilyen oldalakat lógó oldalnak nevezzük (azokat a linkeket amelyek rájuk mutatnak pedig lógó linkeknek). A későbbiekben az ilyen oldalak problémákat okoznak, ezért tegyük fel, hogy minden lógó oldalt helyettesítünk egy az összes másik oldalra linkelővel. 
+Előfordulhat olyan web, ahol bizonyos oldalakról nincsenek kimenő linkek. Az ilyen oldalakat lógó oldalnak nevezzük (azokat a linkeket amelyek rájuk mutatnak pedig lógó linkeknek). A későbbiekben az ilyen oldalak problémákat okoznak, ezért megadok egy módszert, mellyel a ezeket az oldalakat el lehet tüntetni: minden lógó oldalt helyettesítünk egy az összes másik oldalra linkelővel. 
 
-%ide egy ábra: lógó oldalas és helyettesített web
+\bigskip
+
+\begin{minipage}{0.4\textwidth}
+	\begin{center}
+		\begin{tikzpicture}[
+		roundnode/.style={circle, draw=red!60, fill=red!5, very thick, minimum size=7mm},
+		]
+		%Nodes
+		\node[roundnode]      (c1)                     {1};
+		\node[roundnode]      (c2)       [right=of c1] {2};
+		\node[roundnode]      (c3)       [below=of c2] {3};
+		\node[roundnode]      (c4)       [below=of c1] {4};
+		
+		%Lines
+		\draw[->] (c1) -- (c3);
+		\draw[->] (c2) -- (c3);
+		\draw[->] (c3) -- (c1);
+		\draw[->] (c3) -- (c1);
+		\draw[->] (c3) -- (c4);
+		\draw[->] (c2) -- (c1);
+		\end{tikzpicture}
+	\end{center}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+	\begin{center}
+		\begin{tikzpicture}[
+	roundnode/.style={circle, draw=red!60, fill=red!5, very thick, minimum size=7mm},
+	]
+	%Nodes
+	\node[roundnode]      (c1)                     {1};
+	\node[roundnode]      (c2)       [right=of c1] {2};
+	\node[roundnode]      (c3)       [below=of c2] {3};
+	\node[roundnode]      (c4)       [below=of c1] {4};
+	
+	%Lines
+	\draw[->] (c1) -- (c3);
+	\draw[->] (c2) -- (c3);
+	\draw[->] (c3) -- (c1);
+	\draw[->] (c3) -- (c1);
+	\draw[->] (c2) -- (c1);
+	\draw[->] (c4) -- (c1);
+	\draw[->] (c4) -- (c2);
+	\draw[->] (c4) -- (c3);
+	\end{tikzpicture}
+	\end{center}
+\end{minipage}
+
+\bigskip
+\centerline{Egy lógó oldallal (4) rendelkező web, és ugyanez a web, helyettesített oldallal.}
+
+\vspace{0.5 cm}
 
 A helyettesítés mögötti heurisztika az, hogy ha egy böngésző egy olyan oldalra érkezik, ahonnan a linkeken keresztül nem tud továbbmenni, akkor véletlenszerűen, egyenletes eloszlás szerint választ az összes oldal közül.
 
@@ -238,15 +291,68 @@ Tehát a linkmátrix sorai kifejezik azt, hogy egy oldal mennyi és melyik mási
 
 Kapcsolat van az oldalak PageRankjának definíciójából kapott egyenletrendszer és a linkmátrix között. Ennek segítségével az egyenletrendszer felírható a következő mátrixegyenletként:
 
+\[ x = x A \]
+
+ahol x az oldalak rangjait tartalmazó vektor. Ezt átalakítva a következőt kapjuk:
+
 \[ x = A^T x \]
 
-ahol x az oldalak rangjait tartalmazó oszlopvektor.
+Ebből mátrixegyenletből látszik, hogy a keresett vektor az $A^T$ mátrix 1 sajátértékéhez tartozó sajátvektor.
 
-\subsection{title}
+\subsection{Az 1 sajátérték}\label{egy_sajatertek}
 
-\subsection{Sajátérték probléma}
+Felmerül a kérdés, hogy minden $A^T$ mátrixnak sajátértéke-e az 1. Ehhez elég belátni, hogy az $A$ linkmátrixnak az 1 mindig sajátértéke, mivel egy mátrixnak és transzponáltjának a sajátértékei megegyeznek.
 
-Az előző alfejezetben felírt mátrixegyenletből látszik, hogy a keresett vektor az $A^T$ mátrix 1 sajátértékéhez tartozó sajátvektor.
+\begin{tetel}{Az 1 sajátértéke minden lógó oldalt nem tartalmazó web linkmátrixának}
+\end{tetel}
+\begin{proof}
+	Legyen A egy tetszőleges, lógó oldalt nem tartalmazó, n oldalból álló web linkmátrixa. Ekkor az i. sorhoz $(i = 1,2,...,n)$ tartozó sorösszeg $ |\ v_i |\ \times \frac{1}{|\ v_i |\ } = 1 $, azaz minden ilyen mátrix sztochasztikus.
+	
+	Legyen e az az n komponensű oszlopvektor, melynek minden komponense 1. Ekkor az
+	
+	\[ A e = e \] 
+	
+	egyenlet teljesül, mert az eredményvektor i. komponense $(i = 1,2,...,n)$
+	
+	\[ \sum_{j=1}^{n}{1 a_{i,j} } = 1 \] 
+	
+	a mátrix sztochasztikus tulajdonsága miatt. Tehát bármely linkmátrixnak ez az $e$ vektor sajátvektora, 1 sajátértékkel.
+	
+\end{proof}
+\vspace{0.5cm}
+
+Ugyan bármely mátrixnak és transzponáltjának sajátértékei megegyeznek, de az nem igaz, hogy ezen sajátértékekhez tartozó sajátvektorok is azonosak, ezért a fenti tételben bevezetett $e$ vektor nem biztos, hogy megoldása lesz a PageRank definíciója által meghatározott egyenletrendszernek. Ezzel a megoldás egyébként is használhatatlan az oldalak rangsorolásában, mivel minden oldalnak azonos rangot ad.
+
+A lógó oldalakat tartalmazó webek esetén az 1 nem lesz mindig sajátértéke az $A^T$ mátrixnak (lehetnek 0 összegű sorok, ami a fenti bizonyítást elrontja), azonban figyeljük meg, hogy ha elvégezzük a \ref{link_web_logooldal} alfejezetben megadott helyettesítést akkor a kapott mátrix már sztochasztikus lesz, és erre már érvényes az előbbi tétel.
+
+Tehát beláttuk, hogy minden ilyen mátrixnak vagy sajátértéke az 1, vagy egy egyszerű helyettesítéssel el lehet érni, hogy az legyen. 
+
+\subsection{A legnagyobb sajátérték}
+
+Ha sok oldalból álló webek esetén akarjuk meghatározni a rangokat, akkor a pontos megoldást adó módszerek nagyon lassúak, ezért közelítő, iteratív módszerre van szükség. Ideális választás a hatványiteráció, mert ebben az esetben elég tárolni mindössze a linkmátrix transzponáltját, és a PageRank vektor éppen aktuális iterációját a számoláshoz.
+
+A hatványiteráció azonban a domináns sajátértékhez tartozó sajátvektorhoz konvergál. Ahhoz, hogy alkalmazhassuk az 1-hez tartozó sajátvektor megtalálására, be kell látni, hogy az 1 domináns sajátérték. A sajátértékek egyezése miatt itt is elég ezt a linkmátrixra belátni.
+
+\begin{tetel}{Minden lógó oldalt nem tartalmazó linkmátrix esetén az 1 domináns sajátérték.}
+\end{tetel}
+
+\begin{proof}
+	A sajátértékek felülről becsléséhez alkalmazzuk a Gershgorin körtételt. Eszerint a mátrix összes sajátértékének benne kell lennie legalább egy Gershgorin körben. A Gershgorin körtétel ugyan komplex mátrixokra is érvényes, de a linkmátrix csak valós elemeket tartalmazhat. A köröket meghatározó halmazok: 
+	
+	\[ K_i = \{ r \in \mathbb{R}: |\ r - a_{i,i} |\ \leq R_i \} \quad i = 1,2,...,n \]
+	
+	ahol $R_i$ az i. sorösszeg és $a_{i,i}$ az i sorban lévő főátlóbeli elem.
+	
+	Már korábban beláttuk, hogy a feltételeknek eleget tévő linkmátrixok sztochasztikusak, azaz a sorösszeg minden sornál egy. A linkhalmaz \ref{link_web_logooldal} alfejezetben szereplő definíciójában nem engedjük meg azt, hogy egy oldal önmagára linkeljen, ezért $a_{i,i}$ minden sorra 0. Az is igaz továbbá, hogy a linkmátrix minden eleme nemnegatív.
+	
+	Ezen állítások miatt a köröket meghatározó halmazok a következőre egyszerűsödnek:
+	
+	\[ K_i = \{ r \in \mathbb{R}: r \leq 1 \} \quad i = 1,2,...,n \]
+	
+	Ebből látszik, hogy az egy felső korlátja az ilyen mátrixok sajátértékeinek, azaz biztosan domináns sajátérték lesz.
+\end{proof}
+
+Alkakmazhatjuk tehát a hatványiterációt a PageRank vektor közelítéséhez.
 
 %hivatkozások ---------------------------------------------------------
 \bibliography{hivatkozasok}

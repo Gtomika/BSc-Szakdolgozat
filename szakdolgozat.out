@@ -1,0 +1,11 @@
+\BOOKMARK [1][-]{section.1}{Bevezeto}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{A PageRank algoritmus t\366rt\351nete}{section.1}% 2
+\BOOKMARK [2][-]{subsection.1.2}{PageRank program}{section.1}% 3
+\BOOKMARK [1][-]{section.2}{Alapfogalmak \351s defin\355ci\363k}{}% 4
+\BOOKMARK [2][-]{subsection.2.1}{Linkek, web \351s a l\363g\363 oldalak}{section.2}% 5
+\BOOKMARK [2][-]{subsection.2.2}{A PageRank defin\355ci\363ja}{section.2}% 6
+\BOOKMARK [1][-]{section.3}{A saj\341t\351rt\351kprobl\351ma}{}% 7
+\BOOKMARK [2][-]{subsection.3.1}{Linkm\341trix \351s kapcsolata az egyenletrendszerrel}{section.3}% 8
+\BOOKMARK [2][-]{subsection.3.2}{Az 1 saj\341t\351rt\351k}{section.3}% 9
+\BOOKMARK [2][-]{subsection.3.3}{A legnagyobb saj\341t\351rt\351k}{section.3}% 10
+\BOOKMARK [1][-]{section.4}{Konvergencia a PageRank vektorhoz}{}% 11

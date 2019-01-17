@@ -5,6 +5,7 @@
 \usepackage[magyar]{babel}
 \usepackage{makeidx}
 \usepackage{natbib}
+\usepackage{hyperref}
 \usepackage{enumitem}
 \usepackage[version=4]{mhchem}
 \usepackage{graphicx}
@@ -297,7 +298,7 @@ ahol x az oldalak rangjait tartalmazó vektor. Ezt átalakítva a következőt k
 
 \[ x = A^T x \]
 
-Ebből mátrixegyenletből látszik, hogy a keresett vektor az $A^T$ mátrix 1 sajátértékéhez tartozó sajátvektor.
+Ebből mátrixegyenletből látszik, hogy a keresett vektor az $A^T$ mátrix 1 sajátértékéhez tartozó sajátvektor. Természetesen egy sajátvektor bármilyen nem nulla skalárszorosa is sajátvektor ezért az egyértelműség kedvéért tegyük fel, hogy az általunk keresett vektor az, ahol a komponensek összege 1.
 
 \subsection{Az 1 sajátérték}\label{egy_sajatertek}
 
@@ -327,32 +328,92 @@ A lógó oldalakat tartalmazó webek esetén az 1 nem lesz mindig sajátértéke
 
 Tehát beláttuk, hogy minden ilyen mátrixnak vagy sajátértéke az 1, vagy egy egyszerű helyettesítéssel el lehet érni, hogy az legyen. 
 
-\subsection{A legnagyobb sajátérték}
+\subsection{A legnagyobb sajátérték}\label{legnagyobb_sajatertek}
 
 Ha sok oldalból álló webek esetén akarjuk meghatározni a rangokat, akkor a pontos megoldást adó módszerek nagyon lassúak, ezért közelítő, iteratív módszerre van szükség. Ideális választás a hatványiteráció, mert ebben az esetben elég tárolni mindössze a linkmátrix transzponáltját, és a PageRank vektor éppen aktuális iterációját a számoláshoz.
 
 A hatványiteráció azonban a domináns sajátértékhez tartozó sajátvektorhoz konvergál. Ahhoz, hogy alkalmazhassuk az 1-hez tartozó sajátvektor megtalálására, be kell látni, hogy az 1 domináns sajátérték. A sajátértékek egyezése miatt itt is elég ezt a linkmátrixra belátni.
 
-\begin{tetel}{Minden lógó oldalt nem tartalmazó linkmátrix esetén az 1 domináns sajátérték.}
+\begin{tetel}{Minden lógó oldalt nem tartalmazó linkmátrix bármely $\lambda$ sajátértékre $ |\ \lambda |\ \leq 1$.}
 \end{tetel}
 
 \begin{proof}
-	A sajátértékek felülről becsléséhez alkalmazzuk a Gershgorin körtételt. Eszerint a mátrix összes sajátértékének benne kell lennie legalább egy Gershgorin körben. A Gershgorin körtétel ugyan komplex mátrixokra is érvényes, de a linkmátrix csak valós elemeket tartalmazhat. A köröket meghatározó halmazok: 
+	A sajátértékek abszolút értékének felülről becsléséhez alkalmazzuk a Gershgorin körtételt. Eszerint a mátrix összes sajátértékének benne kell lennie legalább egy Gershgorin körben. A Gershgorin körtétel ugyan komplex mátrixokra is érvényes, de a linkmátrix csak valós elemeket tartalmazhat. A köröket meghatározó halmazok: 
 	
 	\[ K_i = \{ r \in \mathbb{R}: |\ r - a_{i,i} |\ \leq R_i \} \quad i = 1,2,...,n \]
 	
 	ahol $R_i$ az i. sorösszeg és $a_{i,i}$ az i sorban lévő főátlóbeli elem.
 	
-	Már korábban beláttuk, hogy a feltételeknek eleget tévő linkmátrixok sztochasztikusak, azaz a sorösszeg minden sornál egy. A linkhalmaz \ref{link_web_logooldal} alfejezetben szereplő definíciójában nem engedjük meg azt, hogy egy oldal önmagára linkeljen, ezért $a_{i,i}$ minden sorra 0. Az is igaz továbbá, hogy a linkmátrix minden eleme nemnegatív.
+	Már korábban beláttuk, hogy a feltételeknek eleget tévő linkmátrixok sztochasztikusak, azaz a sorösszeg minden sornál egy. A linkhalmaz \ref{link_web_logooldal} alfejezetben szereplő definíciójában nem engedjük meg azt, hogy egy oldal önmagára linkeljen, ezért $a_{i,i}$ minden sorra 0.
 	
-	Ezen állítások miatt a köröket meghatározó halmazok a következőre egyszerűsödnek:
+	Ezen állítások miatt a köröket meghatározó halmazok a következőre egyszerűsödnek minden sor esetén:
 	
-	\[ K_i = \{ r \in \mathbb{R}: r \leq 1 \} \quad i = 1,2,...,n \]
+	\[ K_i = \{ r \in \mathbb{R}: |\ r |\ \leq 1 \} \quad i = 1,2,...,n \]
 	
-	Ebből látszik, hogy az egy felső korlátja az ilyen mátrixok sajátértékeinek, azaz biztosan domináns sajátérték lesz.
+	Ebből következik, hogy bármely $\lambda$ sajátértékre $ |\ \lambda |\ \leq 1$-nek teljesülnie kell.
 \end{proof}
 
-Alkakmazhatjuk tehát a hatványiterációt a PageRank vektor közelítéséhez.
+Beláttuk, hogy az egy minden esetben sajátérték, és azt is hogy ennél (abszolút értékben) nem is lehet nagyobb sajátérték. Ebből azonban nem következik az, hogy domináns is lenne. Előfordulhat olyan eset is, hogy a -1 is sajátérték, vagy az 1 többszörös multiplicitással szerepel.
+
+\section{Konvergencia a PageRank vektorhoz}
+
+Amikor egy nagy webhez tartozó PageRank vektort szeretnénk közelíteni, fontos tudni, hogy az iteráció úgy fog viselkedni ahogyan várjuk.
+
+\vspace{0.3cm}
+A következő lehetőségeket kell ellenőrizni:
+
+\begin{enumerate}
+	\item Biztosan konvergálni fog-e a hatványiteráció?
+	\item Ha igen, akkor az indítási helytől függetlenül mindig ugyanabba a vektorba? 
+\end{enumerate}
+
+Egyértelmű, hogy az indulási helytől független, biztos konvergenciát a \ref{legnagyobb_sajatertek} alfejezet végén említett szélsőséges esetek ronthatják el \cite{kleinproject}.
+
+Ezek az eseten olyan webek esetén fordulnak elő, amelyek valójában több egymástól független (azaz nincsenek közöttük linkek) webből állnak össze \cite{kurt}.
+
+\vspace{0.3cm}
+\begin{minipage}{0.4\textwidth}
+	\begin{center}
+		\begin{tikzpicture}[
+				broundnode/.style={circle, draw=blue!60, fill=blue!5, very thick, minimum size=7mm},
+			rroundnode/.style={circle, draw=red!60, fill=red!5, very thick, minimum size=7mm},
+			]
+			%Nodes
+			\node[broundnode]      (c1)                     {1};
+			\node[rroundnode]      (c2)       [right=of c1] {2};
+			\node[rroundnode]      (c3)       [below=of c2] {3};
+			\node[broundnode]      (c4)       [below=of c1] {4};
+			\node[rroundnode]      (c5)       [right=of c2] {5};
+			
+			%Lines
+			\draw[->] (c1) -- (c4);
+			\draw[->] (c4) -- (c1);
+			\draw[->] (c2) -- (c3);
+			\draw[->] (c2) -- (c5);
+			\draw[->] (c3) -- (c5);
+			\draw[->] (c5) -- (c2);
+		\end{tikzpicture}
+	\end{center}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+	\begin{center}
+		\[
+		\begin{bmatrix}
+		0 & 0 & 0 & 1 & 0 \\
+		0 & 0 & \frac{1}{2} & 0 & \frac{1}{2} \\
+		0 & 0 & 0 & 0 & 1 \\
+		1 & 0 & 0 & 0 & 0 \\
+		0 & 1 & 0 & 0 & 0 \\
+		\end{bmatrix}
+		\]
+	\end{center}
+\end{minipage}
+\vspace{0.3cm}
+\newline
+\centerline{Két egymással nem érintkező "szubwebből" álló web és linkmátrixa.}
+\vspace{0.3cm}
+
+A fenti ábrán látható web linkmátrixának sajátértékei között szerepel a -1 és az 1 kétszeres multiplicitással.
 
 %hivatkozások ---------------------------------------------------------
 \bibliography{hivatkozasok}

@@ -116,7 +116,7 @@ A program és annak forráskódja is letölthető a következő oldalról:
 Ahhoz hogy PageRankról beszélhessünk, először a web fogalmát kell bevezetni.
 
 \begin{definicio}{Linkhalmaz}
-	Legyen V a weboldalak halmaza. Ekkor $L \subset V \times V$ \textbf{linkhalmaz}ban $(v_1,v_2)$ ($v_1, v_2 \in V$ és $v_1 \ne v_2$) pontosan akkor van benne ha $v_1$ linkel $v_2$-re. 
+	Legyen V a weboldalak halmaza. Ekkor $L \subset V \times V$ \textbf{linkhalmaz}ban $(v_1,v_2)$ ($v_1, v_2 \in V$ pontosan akkor van benne ha $v_1$ linkel $v_2$-re. 
 \end{definicio}
 
 \begin{definicio}{Web}
@@ -136,17 +136,19 @@ Ahhoz hogy PageRankról beszélhessünk, először a web fogalmát kell bevezetn
 	\node[roundnode]      (c4)       [below=of c1] {4};
 	
 	%Lines
-	\draw[->] (c1) -- (c2);
-	\draw[->] (c2) -- (c3);
-	\draw[->] (c4) -- (c2);
-	\draw[->] (c4) -- (c3);
+	\draw[->,thick] (c1) -- (c2);
+	\draw[->,thick] (c2) -- (c3);
+	\draw[->,thick] (c4) -- (c2);
+	\draw[->,thick] (c4) -- (c3);
 	\end{tikzpicture}
 	\caption{Egy 4 oldalból álló web}
 \end{figure}
 
-A linkhalmaz definíciójában lévő egyszerűsítő feltétel amely nem engedi, hogy egy oldal saját magára linkel, azért tehető meg, mert bár egy valós web esetén ez lehetséges, de a PageRank algoritmusba az ilyen típusú linkek nem számítanak bele, ez ugyanis lehetővé tenné, hogy egy oldal egyszerűen növelje a saját értékelését azzal, hogy sokszor linkel önmagára. Az ilyen linkeket ezért egyszerűen elhagyhatjuk.
+A linkhalmaz definíciója ugyan megengedi azt, hogy egy oldal önmagára linkeljen, mert bár egy valós web esetén ez lehetséges, de a PageRank algoritmus esetén nem akarjuk, hogy az ilyen linkek is beleszámítsanak a rangsorolásba. Ezeket a linkeket ezért egyszerűen elhagyjuk.
 
-Előfordulhat olyan web, ahol bizonyos oldalakról nincsenek kimenő linkek. Az ilyen oldalakat lógó oldalnak nevezzük (azokat a linkeket amelyek rájuk mutatnak pedig lógó linkeknek). A későbbiekben az ilyen oldalak problémákat okoznak, ezért megadok egy módszert, mellyel a ezeket az oldalakat el lehet tüntetni: minden lógó oldalt helyettesítünk egy az összes másik oldalra linkelővel. 
+Az is megfigyelhető, hogy a definíciókban a linkeknek nincsen multiplicitása, egy oldal vagy linkel egy másikra, vagy nem. Ez azért van, hogy a rangsorolást ne lehessen olyan egyszerűen manipulálni, hogy bizonyos oldalak sok linket tartalmaznak egy másikra.  
+
+Előfordulhat olyan web, ahol bizonyos oldalakról nincsenek kimenő linkek. Az ilyen oldalakat lógó oldalnak nevezzük (azokat a linkeket amelyek rájuk mutatnak pedig lógó linkeknek). A későbbiekben ezek az oldalak problémákat okoznak, ezért megadunk egy módszert, mellyel a ezeket az oldalakat el lehet tüntetni: minden lógó oldalt helyettesítünk egy, az összes másik oldalra linkelővel (ebben a kivételes esetben megengedjük az önmagára linkelést is). 
 
 \bigskip
 
@@ -162,12 +164,12 @@ Előfordulhat olyan web, ahol bizonyos oldalakról nincsenek kimenő linkek. Az 
 		\node[roundnode]      (c4)       [below=of c1] {4};
 		
 		%Lines
-		\draw[->] (c1) -- (c3);
-		\draw[->] (c2) -- (c3);
-		\draw[->] (c3) -- (c1);
-		\draw[->] (c3) -- (c1);
-		\draw[->] (c3) -- (c4);
-		\draw[->] (c2) -- (c1);
+		\draw[->,thick] (c1) -- (c3);
+		\draw[->,thick] (c2) -- (c3);
+		\draw[->,thick] (c3) -- (c1);
+		\draw[->,thick] (c3) -- (c1);
+		\draw[->,thick] (c3) -- (c4);
+		\draw[->,thick] (c2) -- (c1);
 		\end{tikzpicture}
 	\end{center}
 \end{minipage}
@@ -183,14 +185,15 @@ Előfordulhat olyan web, ahol bizonyos oldalakról nincsenek kimenő linkek. Az 
 	\node[roundnode]      (c4)       [below=of c1] {4};
 	
 	%Lines
-	\draw[->] (c1) -- (c3);
-	\draw[->] (c2) -- (c3);
-	\draw[->] (c3) -- (c1);
-	\draw[->] (c3) -- (c1);
-	\draw[->] (c2) -- (c1);
-	\draw[->] (c4) -- (c1);
-	\draw[->] (c4) -- (c2);
-	\draw[->] (c4) -- (c3);
+	\draw[->,thick] (c1) -- (c3);
+	\draw[->,thick] (c2) -- (c3);
+	\draw[->,thick] (c3) -- (c1);
+	\draw[->,thick] (c3) -- (c1);
+	\draw[->,thick] (c3) -- (c4);
+	\draw[->,thick] (c2) -- (c1);
+	\draw[->,thick] (c4) -- (c1);
+	\draw[->,thick] (c4) -- (c2);
+	\draw[->,thick] (c4) -- (c3);
 	\end{tikzpicture}
 	\end{center}
 \end{minipage}
@@ -232,7 +235,7 @@ A cél az, hogy olyan algoritmust adjunk meg, amely egyrészt pontosan meghatár
 
 \section{A sajátértékprobléma}
 
-\subsection{Linkmátrix és kapcsolata az egyenletrendszerrel}
+\subsection{Linkmátrix és kapcsolata az egyenletrendszerrel}\label{linkmatrix}
 
 Egy web linkmátrixa az oldalak közötti kapcsolatokat reprezentálja mátrixos formában.
 
@@ -264,12 +267,12 @@ Tehát a linkmátrix sorai kifejezik azt, hogy egy oldal mennyi és melyik mási
 	\node[roundnode]      (c4)       [below=of c1] {4};
 	
 	%Lines
-	\draw[->] (c1) -- (c3);
-	\draw[->] (c1) -- (c4);
-	\draw[->] (c2) -- (c3);
-	\draw[->] (c4) -- (c2);
-	\draw[->] (c3) -- (c1);
-	\draw[->] (c2) -- (c1);
+	\draw[->,thick] (c1) -- (c3);
+	\draw[->,thick] (c1) -- (c4);
+	\draw[->,thick] (c2) -- (c3);
+	\draw[->,thick] (c4) -- (c2);
+	\draw[->,thick] (c3) -- (c1);
+	\draw[->,thick] (c2) -- (c1);
 	\end{tikzpicture}
 	\end{center}
 \end{minipage}
@@ -299,6 +302,9 @@ ahol x az oldalak rangjait tartalmazó vektor. Ezt átalakítva a következőt k
 \[ x = A^T x \]
 
 Ebből mátrixegyenletből látszik, hogy a keresett vektor az $A^T$ mátrix 1 sajátértékéhez tartozó sajátvektor. Természetesen egy sajátvektor bármilyen nem nulla skalárszorosa is sajátvektor ezért az egyértelműség kedvéért tegyük fel, hogy az általunk keresett vektor az, ahol a komponensek összege 1.
+
+\vspace{0.1cm}
+\textbf{Megjegyzés:} Ha webnek az internet egy sok oldalból álló részhalmazát választjuk (márpedig a PageRankokat ilyen esetre akarjuk kiszámolni), akkor a linkmátrix nagyon ritka lesz, azaz szinte az összes eleme 0. Ennek oka, hogy az egy oldal által linkelt további oldalak száma elenyésző az összes oldal számához képest. A linkmátrix ritkasága egy számolási szempontból nagyon kedvező tulajdonság. 
 
 \subsection{Az 1 sajátérték}\label{egy_sajatertek}
 
@@ -357,6 +363,8 @@ Beláttuk, hogy az egy minden esetben sajátérték, és azt is hogy ennél (abs
 
 \section{Konvergencia a PageRank vektorhoz}
 
+\subsection{Gondot okozó tényezők}
+
 Amikor egy nagy webhez tartozó PageRank vektort szeretnénk közelíteni, fontos tudni, hogy az iteráció úgy fog viselkedni ahogyan várjuk.
 
 \vspace{0.3cm}
@@ -386,12 +394,12 @@ Ezek az eseten olyan webek esetén fordulnak elő, amelyek valójában több egy
 			\node[rroundnode]      (c5)       [right=of c2] {5};
 			
 			%Lines
-			\draw[->] (c1) -- (c4);
-			\draw[->] (c4) -- (c1);
-			\draw[->] (c2) -- (c3);
-			\draw[->] (c2) -- (c5);
-			\draw[->] (c3) -- (c5);
-			\draw[->] (c5) -- (c2);
+			\draw[->,thick] (c1) -- (c4);
+			\draw[->,thick] (c4) -- (c1);
+			\draw[->,thick] (c2) -- (c3);
+			\draw[->,thick] (c2) -- (c5);
+			\draw[->,thick] (c3) -- (c5);
+			\draw[->,thick] (c5) -- (c2);
 		\end{tikzpicture}
 	\end{center}
 \end{minipage}
@@ -413,7 +421,70 @@ Ezek az eseten olyan webek esetén fordulnak elő, amelyek valójában több egy
 \centerline{Két egymással nem érintkező "szubwebből" álló web és linkmátrixa.}
 \vspace{0.3cm}
 
-A fenti ábrán látható web linkmátrixának sajátértékei között szerepel a -1 és az 1 kétszeres multiplicitással.
+A fenti ábrán látható web linkmátrixának sajátértékei között szerepel a -1 és az 1 is, kétszeres multiplicitással.
+
+\subsection{Webekhez rendelt Markov-láncok}
+
+Vegyünk egy lógó oldalt nem tartalmazó webet. Legyen adott egy úgynevezett véletlen szörföző, aki minden lépésben egyenletes eloszlás szerint választ a jelenlegi oldalon lévő linkek közül és továbbhalad a választott link által mutatott oldalra. A kezdeti eloszlás szintén legyen egyenletes.
+
+Az ehhez a Markov-lánchoz tartozó átmenetmátrix éppen a linkmátrix lesz. A \ref{linkmatrix} alfejezetben meghatároztuk, hogy a keresett PageRank vektor megoldása az $x = xA$ mátrixegyenletnek. Látszik, hogy ez éppen a Markov-lánc invariáns eloszlása.
+
+Ez logikus, hiszen az invariáns eloszlás mutatja, hogy hosszú távon az idő mekkora részét tölti a véletlen szörföző az állapotokban, tehát azok az oldalak lesznek a legfontosabbak, ahol várhatóan a legtöbb időt töltjük.
+
+\vspace{0.1cm}
+\textbf{Megjegyzés:} Nem minden webhez rendeletünk egy ilyen Markov-láncot. A lógó oldalakat tartalmazó webek linkmátrixában vannak csupa nulla sorok, melyek elrontják a mátrix sztochasztikusságát, de a \ref{link_web_logooldal} alfejezetben megadott helyettesítéssel kapott webek már megfelelőek. 
+
+\subsection{A konvergencia garantálása}
+
+A domináns sajátérték (és ezzel együtt a konvergencia) létezésének garantálásához használjuk fel a Perron–Frobenius tételt.
+
+\vspace{0.1cm}
+\textbf{Perron–Frobenius tétel:} Ha egy $A = (a_{i,j})$ $n \times n$ mátrix minden eleme pozitív, akkor biztosan létezik domináns sajátérték, azaz ha a sajátértékek $\lambda_1 , \lambda_2 , ... , \lambda_n$, akkor
+
+\[ \exists r \in \{1,2,...,n\}: \quad \forall i \neq r \quad |\ \lambda_i |\ < \lambda_r  \]
+
+A tétel értelmében tehát az egyértelmű PageRank vektor létezéséhez annyit kell tenni, hogy a linkmátrixot úgy módosítjuk, hogy csak pozitív elemei legyenek.
+
+\begin{definicio}{Google mátrix}
+	Legyen $A \in \mathbb{R}^{n \times n}$ egy lógó oldalt nem tartalmazó web linkmátrixa, $S$ pedig egy egy olyan $n \times n$-es mátrix, melynek minden eleme $\frac{1}{n}$. Ekkor a Google mátrix a következőképpen áll elő:
+	
+	\[ G = \alpha A + (1-\alpha) S \]
+	
+	ahol $\alpha \in [0,1]$.
+\end{definicio}
+
+Látható, hogy a Google mátrix értéke függ az $\alpha$ paramétertől, de majdnem minden esetben (az $\alpha = 1$-et kivéve) a kapott mátrix minden eleme biztosan pozitív, azaz létezik domináns sajátérték és a hatványiteráció indulási helytől függetlenül az ehhez tartozó sajátvektorhoz fog konvergálni.
+\vspace{0.1 cm}
+
+\[
+\begin{bmatrix}
+0 & \frac{1}{2} & \frac{1}{2} & 0 \\
+\frac{1}{3} & 0 & \frac{1}{3} & \frac{1}{3} \\
+\frac{1}{3} & \frac{1}{3} & 0 & \frac{1}{3} \\
+0 & 0 & 1 & 0 \\
+\end{bmatrix}, \quad
+\begin{bmatrix}
+\frac{1}{4} & \frac{1}{4} & \frac{1}{4} & \frac{1}{4} \\
+\frac{1}{4} & \frac{1}{4} & \frac{1}{4} & \frac{1}{4} \\
+\frac{1}{4} & \frac{1}{4} & \frac{1}{4} & \frac{1}{4} \\
+\frac{1}{4} & \frac{1}{4} & \frac{1}{4} & \frac{1}{4} \\
+\end{bmatrix}, \quad
+\begin{bmatrix}
+0,038 & 0,463 & 0,463 & 0,038 \\
+0,321 & 0,038 & 0,321 & 0,321 \\
+0,321 & 0,321 & 0,38 & 0,321 \\
+0,038 & 0,038 & 0,888 & 0,038 \\
+\end{bmatrix}
+\]
+
+\vspace{0.1 cm}
+\centerline{Egy web linkmátrixa, az $S$ mátrix és az $\alpha = 0,7$ paraméterrel kapott Google mátrix.}
+\vspace{0.3 cm}
+
+\section{A Google mátrix és az $\alpha$ paraméter}
+
+\subsection{A Google mátrix tulajdonságai}
+%nem ritka, sztochasztikus, stb
 
 %hivatkozások ---------------------------------------------------------
 \bibliography{hivatkozasok}

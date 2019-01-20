@@ -54,7 +54,7 @@
 \vspace{3 cm}
 
 %cím
-\centerline{\LARGE{A PageRank algoritmus}}
+\centerline{\LARGE{A PageRank és kiszámolása}}
 \vspace{0.5 cm}
 \centerline{\Large{\textsc{Szakdolgozat}}}
 
@@ -427,7 +427,7 @@ A fenti ábrán látható web linkmátrixának sajátértékei között szerepel
 
 Vegyünk egy lógó oldalt nem tartalmazó webet. Legyen adott egy úgynevezett véletlen szörföző, aki minden lépésben egyenletes eloszlás szerint választ a jelenlegi oldalon lévő linkek közül és továbbhalad a választott link által mutatott oldalra. A kezdeti eloszlás szintén legyen egyenletes.
 
-Az ehhez a Markov-lánchoz tartozó átmenetmátrix éppen a linkmátrix lesz. A \ref{linkmatrix} alfejezetben meghatároztuk, hogy a keresett PageRank vektor megoldása az $x = xA$ mátrixegyenletnek. Látszik, hogy ez éppen a Markov-lánc invariáns eloszlása.
+Az ehhez a Markov-lánchoz tartozó átmenetmátrix éppen a linkmátrix lesz. A \ref{linkmatrix} alfejezetben meghatároztuk, hogy a keresett PageRank vektor megoldása az $x = xA$ mátrixegyenletnek. Látszik, hogy ez éppen a Markov-lánc invariáns eloszlása. Ezért mondtuk azt, hogy a sajátvektorok közül azt választjuk, ahol a komponensek összege 1.
 
 Ez logikus, hiszen az invariáns eloszlás mutatja, hogy hosszú távon az idő mekkora részét tölti a véletlen szörföző az állapotokban, tehát azok az oldalak lesznek a legfontosabbak, ahol várhatóan a legtöbb időt töltjük.
 
@@ -481,10 +481,31 @@ Látható, hogy a Google mátrix értéke függ az $\alpha$ paramétertől, de m
 \centerline{Egy web linkmátrixa, az $S$ mátrix és az $\alpha = 0,7$ paraméterrel kapott Google mátrix.}
 \vspace{0.3 cm}
 
+\textbf{Megjegyzés:} A helyettesítés mögötti heurisztika. \newline
+Tekintsük a webhez rendelt Markov-láncot. Ezt úgy módosítjuk, hogy a véletlen szörföző most már nem csak a linkeken keresztül juthat el a következő oldalra, hanem bizonyos valószínűséggel egy egyenletes eloszlás szerint választott véletlen oldalra ugrik. Ebben a modellben már nem lehetnek teljesen különálló oldalhalmazok, a véletlen szörföző bárhonnan eljuthat bárhova.
+
+Az így kapott Markov-lánc átmenetmátrixa éppen a Google mátrix lesz, ahol az $\alpha$ paraméter dönt arról, hogy mekkora valószínűséggel követjük a linkeket és mekkorával ugrunk véletlen oldalra.
+
 \section{A Google mátrix és az $\alpha$ paraméter}
 
 \subsection{A Google mátrix tulajdonságai}
 %nem ritka, sztochasztikus, stb
+
+A Google mátrix szintén sztochasztikus lesz, bármely $\alpha$ paraméter esetén. A linkmátrixról ($A$) és a csupa $\frac{1}{n}$ komponensből álló ($S$) mátrixokról tudjuk, hogy sztochasztikusak, ezért $\alpha A$ és $(1-\alpha)S$ mátrixok sorösszegei rendre $\alpha$ és $(1-\alpha)$. A Google mátrix esetén így a sorok összege $\alpha+(1-\alpha) = 1$ lesz.
+
+\vspace{0.2cm}
+
+A \ref{linkmatrix} alfejezetben említettük, hogy a linkmátrix általában egy ritka mátrix és hogy ez számítási szempontból nagyon előnyös. A Google mátrix ennek éppen az ellentéte, nemhogy sűrű, de biztosan nem tartalmaz egyetlen 0 elemet sem, ugyanis ez szükséges ha a hatványiteráció konvergenciáját a Perron–Frobenius tétellel akarjuk garantálni. Sűrű mátrixok esetében azonban a mátrixszorzás sokkal lassabb mint ritkáknál.
+
+A Google mátrix sűrűségéből adódó számítási problémát ki lehet küszöbölni. Ha hatványiteráció $i+1$.-ik lépése
+
+\[ x^{i+1} = G x^i \]
+
+ahol $x$ a PageRank vektor, akkor ez ekvivalens a következő alakkal:
+
+\[ x^{i+1} = \alpha A x^i + (1-\alpha)S\] 
+
+Először tehát a linkmátrix skalárszorosával szorozzuk a PageRank vektor jelenlegi iterációját, majd ezután adjuk hozzá a csupa $\frac{1-\alpha}{n}$ elemekből álló mátrixot. Ekkor az elvégzett mátrixszorzásban már nem szerepel a sűrű Google mátrix, de az iteráció eredménye ugyanaz, mitha azzal szoroztunk volna. 
 
 %hivatkozások ---------------------------------------------------------
 \bibliography{hivatkozasok}

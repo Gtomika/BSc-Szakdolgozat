@@ -209,7 +209,7 @@ A helyettesítés mögötti heurisztika az, hogy ha egy böngésző egy olyan ol
 
 Egy oldal fontossága azon múlik, hogy mennyi oldal linkel rá, és hogy ezek milyen fontosak. A linkelő oldalak fontosságára azért van szükség, mert enélkül egy oldaltulajdonos tudná úgy növelni a weboldalának fontosságát, hogy rengeteg oldalt hoz létre, melyek mind linkelnek egymásra és a saját oldalára (ezt link farmnak nevezik \cite{lang}).
 
-Az egy oldal fontosságát leíró pozitív valós számot is szokás az algoritmushoz hasonlóan PageRanknak nevezni. Egy webet el lehet úgy is képzelni, mint az oldalak demokráciáját ahol minden oldalnak szavazata van és ezt a szavazatot (és még a kapott szavazatokat is) továbbosztja úgy, hogy linkel a többi oldalra.
+Egy webet el lehet úgy is képzelni, mint az oldalak demokráciáját ahol minden oldalnak szavazata van és ezt a szavazatot (és még a kapott szavazatokat is) továbbosztja úgy, hogy linkel a többi oldalra.
 
 \begin{definicio}{Weboldal PageRankja}
 	Legyen adott egy web, V az oldalak, L a linkek halmaza.
@@ -251,7 +251,7 @@ Egy web linkmátrixa az oldalak közötti kapcsolatokat reprezentálja mátrixos
 	
 \end{definicio}
 
-Tehát a linkmátrix sorai kifejezik azt, hogy egy oldal mennyi és melyik másik oldalakra linkel. 
+Tehát a linkmátrix sorai kifejezik azt, hogy egy oldal mennyi és melyik másik oldalakra linkel. Megfigyelhető, hogy amennyiben a web nem tartalmaz lógó oldalt, úgy a linkmátrix sztochasztikus lesz, azaz sorainak összege mindig 1, amennyiben pedig tartalmaz ilyen oldalt, a \ref{link_web_logooldal} alfejezetben megadott helyettesítéssel kapott mátrix már sztochasztikus lesz. 
 
 \bigskip
 
@@ -301,7 +301,7 @@ ahol x az oldalak rangjait tartalmazó vektor. Ezt átalakítva a következőt k
 
 \[ x = A^T x \]
 
-Ebből mátrixegyenletből látszik, hogy a keresett vektor az $A^T$ mátrix 1 sajátértékéhez tartozó sajátvektor. Természetesen egy sajátvektor bármilyen nem nulla skalárszorosa is sajátvektor ezért az egyértelműség kedvéért tegyük fel, hogy az általunk keresett vektor az, ahol a komponensek összege 1.
+Ebből mátrixegyenletből látszik, hogy a keresett vektor az $A^T$ mátrix 1 sajátértékéhez tartozó sajátvektor. Természetesen egy sajátvektor bármilyen nem nulla skalár szorosa is sajátvektor ezért az egyértelműség kedvéért tegyük fel, hogy az általunk keresett vektor az, ahol a komponensek összege 1, ez a későbbiekben hasznos lesz.
 
 \vspace{0.1cm}
 \textbf{Megjegyzés:} Ha webnek az internet egy sok oldalból álló részhalmazát választjuk (márpedig a PageRankokat ilyen esetre akarjuk kiszámolni), akkor a linkmátrix nagyon ritka lesz, azaz szinte az összes eleme 0. Ennek oka, hogy az egy oldal által linkelt további oldalak száma elenyésző az összes oldal számához képest. A linkmátrix ritkasága egy számolási szempontból nagyon kedvező tulajdonság. 
@@ -336,10 +336,6 @@ Tehát beláttuk, hogy minden ilyen mátrixnak vagy sajátértéke az 1, vagy eg
 
 \subsection{A legnagyobb sajátérték}\label{legnagyobb_sajatertek}
 
-Ha sok oldalból álló webek esetén akarjuk meghatározni a rangokat, akkor a pontos megoldást adó módszerek nagyon lassúak, ezért közelítő, iteratív módszerre van szükség. Ideális választás a hatványiteráció, mert ebben az esetben elég tárolni mindössze a linkmátrix transzponáltját, és a PageRank vektor éppen aktuális iterációját a számoláshoz.
-
-A hatványiteráció azonban a domináns sajátértékhez tartozó sajátvektorhoz konvergál. Ahhoz, hogy alkalmazhassuk az 1-hez tartozó sajátvektor megtalálására, be kell látni, hogy az 1 domináns sajátérték. A sajátértékek egyezése miatt itt is elég ezt a linkmátrixra belátni.
-
 \begin{tetel}{Minden lógó oldalt nem tartalmazó linkmátrix bármely $\lambda$ sajátértékre $ |\ \lambda |\ \leq 1$.}
 \end{tetel}
 
@@ -360,6 +356,20 @@ A hatványiteráció azonban a domináns sajátértékhez tartozó sajátvektorh
 \end{proof}
 
 Beláttuk, hogy az egy minden esetben sajátérték, és azt is hogy ennél (abszolút értékben) nem is lehet nagyobb sajátérték. Ebből azonban nem következik az, hogy domináns is lenne. Előfordulhat olyan eset is, hogy a -1 is sajátérték, vagy az 1 többszörös multiplicitással szerepel.
+
+\subsection{A hatványiteráció}
+
+Ha sok oldalból álló webek esetén akarjuk meghatározni a rangokat, akkor a pontos megoldást adó módszerek nagyon lassúak, ezért közelítő, iteratív módszerre van szükség. Ideális választás a hatványiteráció, mert ebben az esetben elég tárolni mindössze a linkmátrix transzponáltját, és a PageRank vektor éppen aktuális iterációját a számoláshoz.
+
+\vspace{0.2cm}
+A hatványiteráció általános alakja:
+
+\[ x^{i+1} = M x^i \]
+
+ahol $M \in \mathbb{R}^{n \times n}$ és $x^0 \in \mathbb{R}^n$.
+\vspace{0.2cm}
+
+A hatványiteráció azonban a domináns sajátértékhez tartozó sajátvektorhoz konvergál. Ha ilyen nincsen, akkor nem tudjuk garantálni a konvergenciát. Ahhoz, hogy alkalmazhassuk az 1-hez tartozó sajátvektor megtalálására, vagy be kell látni, hogy az 1 mindig domináns sajátérték, vagy úgy kell módosítani a linkmátrixon, hogy az legyen.
 
 \section{Konvergencia a PageRank vektorhoz}
 
@@ -434,7 +444,7 @@ Ez logikus, hiszen az invariáns eloszlás mutatja, hogy hosszú távon az idő 
 \vspace{0.1cm}
 \textbf{Megjegyzés:} Nem minden webhez rendeletünk egy ilyen Markov-láncot. A lógó oldalakat tartalmazó webek linkmátrixában vannak csupa nulla sorok, melyek elrontják a mátrix sztochasztikusságát, de a \ref{link_web_logooldal} alfejezetben megadott helyettesítéssel kapott webek már megfelelőek. 
 
-\subsection{A konvergencia garantálása}
+\subsection{A konvergencia garantálása}\label{konvergencia_garantalas}
 
 A domináns sajátérték (és ezzel együtt a konvergencia) létezésének garantálásához használjuk fel a Perron–Frobenius tételt.
 
@@ -506,6 +516,18 @@ ahol $x$ a PageRank vektor, akkor ez ekvivalens a következő alakkal:
 \[ x^{i+1} = \alpha A x^i + (1-\alpha)S\] 
 
 Először tehát a linkmátrix skalárszorosával szorozzuk a PageRank vektor jelenlegi iterációját, majd ezután adjuk hozzá a csupa $\frac{1-\alpha}{n}$ elemekből álló mátrixot. Ekkor az elvégzett mátrixszorzásban már nem szerepel a sűrű Google mátrix, de az iteráció eredménye ugyanaz, mitha azzal szoroztunk volna. 
+
+\subsection{Az $\alpha$ paraméter kérdése}
+
+Az előző fejezetben láttuk, hogy szinte bármilyen $\alpha \in [0,1]$ választás esetén (az $\alpha=1$ esetet kivéve) garantáljuk a hatványiteráció konvergenciáját, de felmerül a kérdés, hogy van-e egyéb jelentőség ennek a paraméternek, és ha igen, akkor hogyan válasszuk meg.
+
+A \ref{konvergencia_garantalas} alfejezetben megadott heurisztikából kiderül, hogy $\alpha$ nem lesz más, mint annak a valószínűsége, hogy a véletlen szörföző követi a linkeket, ahelyett, hogy tetszőleges oldalra ugrana. Mivel az oldalak fontosságát a linkek alapján szeretnénk meghatározni (és a PageRankot is így definiáltuk), ezért adódik, hogy $\alpha$-t válasszuk az 1-hez minél közelebbi értéknek, mert így a web struktúrája, a linkek nagy hangsúlyt kapnak a Google mátrixban is. Az 1-hez közeli $\alpha$ azt jelenti, hogy a véletlen szörföző szinte mindig a linkeken keresztül halad tovább.
+
+Tudjuk azonban, hogy a Google, saját PageRank számolásánál $\alpha \approx 0,85$ \cite{lang2} értéket használ. A fentiek ismeretében miért nem 0,9 vagy akár 0,999 ez az érték? 
+
+\subsection{$\alpha$ mint sajátérték}
+
+A válasz az, hogy $\alpha$-tól nagyban függ a konvergencia sebessége.
 
 %hivatkozások ---------------------------------------------------------
 \bibliography{hivatkozasok}

@@ -525,9 +525,37 @@ A \ref{konvergencia_garantalas} alfejezetben megadott heurisztikából kiderül,
 
 Tudjuk azonban, hogy a Google, saját PageRank számolásánál $\alpha \approx 0,85$ \cite{lang2} értéket használ. A fentiek ismeretében miért nem 0,9 vagy akár 0,999 ez az érték? 
 
-\subsection{$\alpha$ mint sajátérték}
+A válasz az, hogy $\alpha$-tól nagyban függ a konvergencia sebessége, amit a következő fejezetekben indoklunk.
 
-A válasz az, hogy $\alpha$-tól nagyban függ a konvergencia sebessége.
+\subsection{A hatványiteráció konvergenciájának sebessége}
+
+Tegyük fel, hogy a mátrixnak, melyre a hatványiterációt szeretnénk alkalmazni a következők a sajátértékei:
+
+\[ |\ \lambda_1 |\ > |\ \lambda_2 |\ \geq |\ \lambda_3 |\ \geq ... \geq |\ \lambda_n |\ \] 
+
+Látható, hogy $\lambda_1$ domináns sajátérték, azaz a hatványiteráció biztosan konvergálni fog. A valódi sajátvektor és az iteráció eredménye közti különbség minden lépésben aszimptotikusan csökken $ |\ \lambda_1 |\ / |\ \lambda_2 |\ $ valamilyen többszörösével \cite{poweriteration}.
+
+$\lambda_1$ domináns sajátérték, ezért a vizsgált hányadosról biztosan tudjuk, hogy:
+
+\[ 1 < |\ \lambda_1 |\ / |\ \lambda_2 |\ \]
+
+Látható, hogy minél kisebb ez a hányados, annál kisebb mértékben fog csökkenni a hiba mértéke az iterációs lépések között, azaz a konvergencia sebessége és a helyzet akkor a legrosszabb amikor
+
+\[ |\ \lambda_1 |\ / |\ \lambda_2 |\ \approx 1 \]
+
+\[ |\ \lambda_1 |\ \approx |\ \lambda_2 |\ \]
+
+A google mátrix estében a sajátértékek
+
+\[ 1 > |\ \lambda_2 |\ \geq |\ \lambda_3 |\ \geq ... \geq |\ \lambda_n |\ \]
+
+ezért a fentebb említett legrosszabb eset a következőképpen módosul:
+
+\[ 1 / |\ \lambda_2 |\ \approx 1 \]
+
+Minél közelebb van tehát a második legnagyobb sajátérték 1-hez (a domináns sajátértékhez), annál lassabb lesz a konvergencia sebessége.
+
+\subsection{$\alpha$ mint sajátérték}
 
 %hivatkozások ---------------------------------------------------------
 \bibliography{hivatkozasok}

@@ -369,7 +369,7 @@ A hatványiteráció általános alakja:
 ahol $M \in \mathbb{R}^{n \times n}$ és $x^0 \in \mathbb{R}^n$.
 \vspace{0.2cm}
 
-A hatványiteráció azonban a domináns sajátértékhez tartozó sajátvektorhoz konvergál. Ha ilyen nincsen, akkor nem tudjuk garantálni a konvergenciát. Ahhoz, hogy alkalmazhassuk az 1-hez tartozó sajátvektor megtalálására, vagy be kell látni, hogy az 1 mindig domináns sajátérték, vagy úgy kell módosítani a linkmátrixon, hogy az legyen.
+A hatványiteráció azonban a domináns sajátértékhez tartozó sajátvektorhoz konvergál. Ha ilyen nincsen, akkor nem tudjuk garantálni a konvergenciát. Ahhoz, hogy alkalmazhassuk az egyhez tartozó sajátvektor megtalálására, vagy be kell látni, hogy az 1 mindig domináns sajátérték, vagy úgy kell módosítani a linkmátrixon, hogy az legyen.
 
 \section{Konvergencia a PageRank vektorhoz}
 
@@ -515,19 +515,19 @@ ahol $x$ a PageRank vektor, akkor ez ekvivalens a következő alakkal:
 
 \[ x^{i+1} = \alpha A x^i + (1-\alpha)S\] 
 
-Először tehát a linkmátrix skalárszorosával szorozzuk a PageRank vektor jelenlegi iterációját, majd ezután adjuk hozzá a csupa $\frac{1-\alpha}{n}$ elemekből álló mátrixot. Ekkor az elvégzett mátrixszorzásban már nem szerepel a sűrű Google mátrix, de az iteráció eredménye ugyanaz, mitha azzal szoroztunk volna. 
+Először tehát a linkmátrix skalár szorosával szorozzuk a PageRank vektor jelenlegi iterációját, majd ezután adjuk hozzá a csupa $\frac{1-\alpha}{n}$ elemekből álló mátrixot. Ekkor az elvégzett mátrixszorzásban már nem szerepel a sűrű Google mátrix, de az iteráció eredménye ugyanaz, mintha azzal szoroztunk volna. 
 
 \subsection{Az $\alpha$ paraméter kérdése}
 
 Az előző fejezetben láttuk, hogy szinte bármilyen $\alpha \in [0,1]$ választás esetén (az $\alpha=1$ esetet kivéve) garantáljuk a hatványiteráció konvergenciáját, de felmerül a kérdés, hogy van-e egyéb jelentőség ennek a paraméternek, és ha igen, akkor hogyan válasszuk meg.
 
-A \ref{konvergencia_garantalas} alfejezetben megadott heurisztikából kiderül, hogy $\alpha$ nem lesz más, mint annak a valószínűsége, hogy a véletlen szörföző követi a linkeket, ahelyett, hogy tetszőleges oldalra ugrana. Mivel az oldalak fontosságát a linkek alapján szeretnénk meghatározni (és a PageRankot is így definiáltuk), ezért adódik, hogy $\alpha$-t válasszuk az 1-hez minél közelebbi értéknek, mert így a web struktúrája, a linkek nagy hangsúlyt kapnak a Google mátrixban is. Az 1-hez közeli $\alpha$ azt jelenti, hogy a véletlen szörföző szinte mindig a linkeken keresztül halad tovább.
+A \ref{konvergencia_garantalas} alfejezetben megadott heurisztikából kiderül, hogy $\alpha$ nem lesz más, mint annak a valószínűsége, hogy a véletlen szörföző követi a linkeket, ahelyett, hogy tetszőleges oldalra ugrana. Mivel az oldalak fontosságát a linkek alapján szeretnénk meghatározni (és a PageRankot is így definiáltuk), ezért adódik, hogy $\alpha$-t válasszuk az egyhez minél közelebbi értéknek, mert így a web struktúrája, a linkek nagy hangsúlyt kapnak a Google mátrixban is. Az egyhez közeli $\alpha$ azt jelenti, hogy a véletlen szörföző szinte mindig a linkeken keresztül halad tovább.
 
 Tudjuk azonban, hogy a Google, saját PageRank számolásánál $\alpha \approx 0,85$ \cite{lang2} értéket használ. A fentiek ismeretében miért nem 0,9 vagy akár 0,999 ez az érték? 
 
 A válasz az, hogy $\alpha$-tól nagyban függ a konvergencia sebessége, amit a következő fejezetekben indoklunk.
 
-\subsection{A hatványiteráció konvergenciájának sebessége}
+\subsection{A hatványiteráció konvergenciájának sebessége}\label{konvergencia_sebesseg}
 
 Tegyük fel, hogy a mátrixnak, melyre a hatványiterációt szeretnénk alkalmazni a következők a sajátértékei:
 
@@ -545,7 +545,7 @@ Látható, hogy minél kisebb ez a hányados, annál kisebb mértékben fog csö
 
 \[ |\ \lambda_1 |\ \approx |\ \lambda_2 |\ \]
 
-A google mátrix estében a sajátértékek
+A Google mátrix estében a sajátértékek
 
 \[ 1 > |\ \lambda_2 |\ \geq |\ \lambda_3 |\ \geq ... \geq |\ \lambda_n |\ \]
 
@@ -553,9 +553,26 @@ ezért a fentebb említett legrosszabb eset a következőképpen módosul:
 
 \[ 1 / |\ \lambda_2 |\ \approx 1 \]
 
-Minél közelebb van tehát a második legnagyobb sajátérték 1-hez (a domináns sajátértékhez), annál lassabb lesz a konvergencia sebessége.
+Minél közelebb van tehát a második legnagyobb sajátérték egyhez (a domináns sajátértékhez), annál lassabb lesz a konvergencia sebessége.
 
 \subsection{$\alpha$ mint sajátérték}
+
+A konvergencia sebessége úgy kapcsolódik az $\alpha$ paraméterhez, hogy $\alpha$ maga is sajátérték. Ezt az alábbi két tétel igazolja \cite{secondeigenvalue}. 
+
+\vspace{0.1cm}
+\begin{tetel}{Ha a Google mátrix sajátértékei $ 1 > |\ \lambda_2 |\ \geq |\ \lambda_3 |\ \geq ... \geq |\ \lambda_n |\ $, akkor $\lambda_2 \leq \alpha$. }
+\end{tetel}
+\begin{proof}
+	?
+\end{proof}
+
+\begin{tetel}{Ha a Google mátrix sajátértékei $ 1 > |\ \lambda_2 |\ \geq |\ \lambda_3 |\ \geq ... \geq |\ \lambda_n |\ $, akkor $\lambda_2 = \alpha$. }
+\end{tetel}
+\begin{proof}
+	?
+\end{proof}
+
+Láttuk tehát, hogy $\alpha$ a vizsgált mátrix második legnagyobb sajátértéke, ezért az \ref{konvergencia_sebesseg} alfejezet értelmében a hatványiteráció konvergenciájának sebessége függ $\alpha$-tól. Minél közelebb van egyhez, annál lassabb lesz a konvergencia.
 
 %hivatkozások ---------------------------------------------------------
 \bibliography{hivatkozasok}

@@ -560,10 +560,21 @@ Minél közelebb van tehát a második legnagyobb sajátérték egyhez (a domin�
 A konvergencia sebessége úgy kapcsolódik az $\alpha$ paraméterhez, hogy $\alpha$ maga is sajátérték. Ezt az alábbi két tétel igazolja \cite{secondeigenvalue}. 
 
 \vspace{0.1cm}
-\begin{tetel}{Ha a Google mátrix sajátértékei $ 1 > |\ \lambda_2 |\ \geq |\ \lambda_3 |\ \geq ... \geq |\ \lambda_n |\ $, akkor $\lambda_2 \leq \alpha$. }
+\begin{tetel}{Ha a Google mátrix $G = \alpha A + (1-\alpha)S$ ($\alpha \in [0,1)$, $G \in \mathbb{R}^n$) sajátértékei $ 1 > |\ \lambda_2 |\ \geq |\ \lambda_3 |\ \geq ... \geq |\ \lambda_n |\ $, akkor $\lambda_2 \leq \alpha$. }
 \end{tetel}
 \begin{proof}
-	?
+	
+	Először igazoljuk a tételt az $\alpha = 0$ esetre. Ekkor $G = S$, ahol $S = (\frac{1}{n})_{i,j}$ $(i,j = 1,2,...,n)$.
+	
+	Ekkor $S = e_1 e_2^T$, ahol $e_1$ a csupa egyeseket, $e_2$ pedig a csupa $\frac{1}{n}$ komponenseket tartalmazó oszlopvektorok. Mivel $S$ felírható ilyen alakban, ezért $Rank(S) = 1$ és csak két sajátérték lehetséges $e_1^T e_2^T = 1$ és 0 \cite{rankonematrix}.   
+	
+	A második legnagyobb sajátérték tehát 0 és az egyenlőtlenség teljesül.
+	
+	\newtheorem{lemma}{Lemma}
+	\begin{lemma}
+		
+	\end{lemma}
+	
 \end{proof}
 
 \begin{tetel}{Ha a Google mátrix sajátértékei $ 1 > |\ \lambda_2 |\ \geq |\ \lambda_3 |\ \geq ... \geq |\ \lambda_n |\ $, akkor $\lambda_2 = \alpha$. }

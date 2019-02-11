@@ -312,6 +312,7 @@ Felmerül a kérdés, hogy minden $A^T$ mátrixnak sajátértéke-e az 1. Ehhez 
 
 \begin{tetel}{Az 1 sajátértéke minden lógó oldalt nem tartalmazó web linkmátrixának}
 \end{tetel}
+\vspace{-1cm}
 \begin{proof}
 	Legyen A egy tetszőleges, lógó oldalt nem tartalmazó, n oldalból álló web linkmátrixa. Ekkor az i. sorhoz $(i = 1,2,...,n)$ tartozó sorösszeg $ |\ v_i |\ \times \frac{1}{|\ v_i |\ } = 1 $, azaz minden ilyen mátrix sztochasztikus.
 	
@@ -338,7 +339,7 @@ Tehát beláttuk, hogy minden ilyen mátrixnak vagy sajátértéke az 1, vagy eg
 
 \begin{tetel}{Minden lógó oldalt nem tartalmazó linkmátrix bármely $\lambda$ sajátértékre $ |\ \lambda |\ \leq 1$.}
 \end{tetel}
-
+\vspace{-1cm}
 \begin{proof}
 	A sajátértékek abszolút értékének felülről becsléséhez alkalmazzuk a Gershgorin körtételt. Eszerint a mátrix összes sajátértékének benne kell lennie legalább egy Gershgorin körben. A Gershgorin körtétel ugyan komplex mátrixokra is érvényes, de a linkmátrix csak valós elemeket tartalmazhat. A köröket meghatározó halmazok: 
 	
@@ -517,6 +518,20 @@ ahol $x$ a PageRank vektor, akkor ez ekvivalens a következő alakkal:
 
 Először tehát a linkmátrix skalár szorosával szorozzuk a PageRank vektor jelenlegi iterációját, majd ezután adjuk hozzá a csupa $\frac{1-\alpha}{n}$ elemekből álló mátrixot. Ekkor az elvégzett mátrixszorzásban már nem szerepel a sűrű Google mátrix, de az iteráció eredménye ugyanaz, mintha azzal szoroztunk volna. 
 
+\vspace{0.2cm}
+A linkmátrixhoz hasonlóan a Google mátrixhoz is rendelhető egy Markov-lánc, mivel a fejezet elején láttuk, hogy ez is sztochasztikus mátrix. Az ehhez a mátrixhoz tartozó Markov-lánc néhány tulajdonságát a következő tétel mondja ki.
+
+\begin{tetel}
+	{A Google mátrixhoz tartozó Markov-lánc irreducibilis és aperiodikus.}
+\end{tetel}
+\vspace{-1cm}
+\begin{proof}
+	Mindkét tulajdonság következik abból, hogy a Google mátrixot (ami most egy átmenetmátrix lesz) úgy konstruáltuk, hogy egy elem se lehessen benne nulla. Az irreducibilitás azt jelenti, hogy bármely állapotból bármely másikba el lehessen jutni, és az, hogy nincs null az átmenetmátrixban éppen ezt jelenti. 
+	
+	Az aperiodikusságot az garantálja, hogy a fentiek miatt a főátlóbeli elemek sem nullák, ezért a Markov-láncnak nem lehet semmilyen egytől különböző periódusa.
+\end{proof}
+
+
 \subsection{Az $\alpha$ paraméter kérdése}
 
 Az előző fejezetben láttuk, hogy szinte bármilyen $\alpha \in [0,1]$ választás esetén (az $\alpha=1$ esetet kivéve) garantáljuk a hatványiteráció konvergenciáját, de felmerül a kérdés, hogy van-e egyéb jelentőség ennek a paraméternek, és ha igen, akkor hogyan válasszuk meg.
@@ -562,18 +577,36 @@ A konvergencia sebessége úgy kapcsolódik az $\alpha$ paraméterhez, hogy $\al
 \vspace{0.1cm}
 \begin{tetel}{Ha a Google mátrix $G = \alpha A + (1-\alpha)S$ ($\alpha \in [0,1)$, $G \in \mathbb{R}^n$) sajátértékei $ 1 > |\ \lambda_2 |\ \geq |\ \lambda_3 |\ \geq ... \geq |\ \lambda_n |\ $, akkor $\lambda_2 \leq \alpha$. }
 \end{tetel}
+\vspace{-1cm}
 \begin{proof}
 	
 	Először igazoljuk a tételt az $\alpha = 0$ esetre. Ekkor $G = S$, ahol $S = (\frac{1}{n})_{i,j}$ $(i,j = 1,2,...,n)$.
 	
-	Ekkor $S = e_1 e_2^T$, ahol $e_1$ a csupa egyeseket, $e_2$ pedig a csupa $\frac{1}{n}$ komponenseket tartalmazó oszlopvektorok. Mivel $S$ felírható ilyen alakban, ezért $Rank(S) = 1$ és csak két sajátérték lehetséges $e_1^T e_2^T = 1$ és 0 \cite{rankonematrix}.   
+	Ekkor $S = e e_p^T$, ahol $e$ a csupa egyeseket, $e_p$ pedig a csupa $\frac{1}{n}$ komponenseket tartalmazó oszlopvektorok. Mivel $S$ felírható ilyen alakban, ezért $Rank(S) = 1$ és csak két sajátérték lehetséges $e^T e_p^T = 1$ és 0 \cite{rankonematrix}.   
 	
 	A második legnagyobb sajátérték tehát 0 és az egyenlőtlenség teljesül.
 	
+	\vspace{0.1cm}
+	Az általános $0 < \alpha < 1$ esetet a következő lemmák segítségével igazoljuk. 
+	
 	\newtheorem{lemma}{Lemma}
 	\begin{lemma}
-		
+	 	A $G^T$ mátrix $\lambda_2$ sajátértékhez tartozó sajátvektor (legyen $x_2$) ortogonális az $e$ vektorra, vagyis $e^T x_2 = 0$.
 	\end{lemma}
+	\begin{proof}
+		Tudjuk, hogy egy mátrixhoz és transzponáltjához tartozó sajátvektorok ortogonálisak, ha nem ugyanahhoz a sajátértékhez tartoznak \cite{orthogonal_eigenvectors}. Mivel $x_2$ a $\lambda_2$-höz tartozik $G^T$ mátrixban, ezért ortogonális lesz $G$ legnagyobb sajátértékéhez (ami éppen egy) tartozó sajátvektorra. 
+		
+		Ez a sajátvektor éppen $e$, mivel
+		
+		\[ G e = e \]
+		
+		\[  ( \alpha A + (1-\alpha) S ) e = e  \]
+		
+		\[  \alpha A e + (1-\alpha) S e = e \]
+		
+		A \ref{egy_sajatertek} fejezetben láttuk, hogy $A e = e$ és az is igaz, hogy $S e = e$, ezért az egyenlőség teljesül, $e$ valóban sajátvektora $G$-nek, és ortogonális $x_2$-re.	
+		\phantom\qedhere
+	\end{proof}
 	
 \end{proof}
 

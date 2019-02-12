@@ -594,7 +594,7 @@ A konvergencia sebessége úgy kapcsolódik az $\alpha$ paraméterhez, hogy $\al
 	 	A $G^T$ mátrix $\lambda_2$ sajátértékhez tartozó sajátvektor (legyen $x_2$) ortogonális az $e$ vektorra, vagyis $e^T x_2 = 0$.
 	\end{lemma}
 	\begin{proof}
-		Tudjuk, hogy egy mátrixhoz és transzponáltjához tartozó sajátvektorok ortogonálisak, ha nem ugyanahhoz a sajátértékhez tartoznak \cite{orthogonal_eigenvectors}. Mivel $x_2$ a $\lambda_2$-höz tartozik $G^T$ mátrixban, ezért ortogonális lesz $G$ legnagyobb sajátértékéhez (ami éppen egy) tartozó sajátvektorra. 
+		Tudjuk, hogy egy mátrixhoz és transzponáltjához tartozó sajátvektorok ortogonálisak, ha nem ugyanahhoz a sajátértékhez tartoznak \cite{orthogonal_eigenvectors}. Mivel $x_2$ a $\lambda_2$-höz tartozik $G^T$ mátrixban, ezért ortogonális lesz $G$ legnagyobb sajátértékéhez tartozó sajátvektorra. 
 		
 		Ez a sajátvektor éppen $e$, mivel
 		
@@ -608,6 +608,42 @@ A konvergencia sebessége úgy kapcsolódik az $\alpha$ paraméterhez, hogy $\al
 		\phantom\qedhere
 	\end{proof}
 	
+	\begin{lemma}
+		Legyen $x_2$ a $\lambda_2$ sajátértékhez tartozó sajátvektor a $G^T$ mátrixban. Ekkor $S^T x_2 = 0$.
+	\end{lemma}
+	\begin{proof}
+		Tudjuk, hogy $S = e e_p^T$, vagyis $S^T = e_p e^T$. Ekkor $S^T x_2 = e_p e^T x_2$. Az előző lemmából tudjuk, hogy $e^T x_2 = 0$, ezért $S x_2$ is 0 lesz.
+		\phantom\qedhere
+	\end{proof}
+	
+	\begin{lemma}
+		$x^2$ vektor sajátvektora lesz $A$-nak is, és ha a hozzá tartozó sajátérték $\mu$, akkor $\mu = \lambda_2 / \alpha$. 
+	\end{lemma}
+    \begin{proof}
+    	Az $x_2$ vektor a $G^T$ mátrix $\lambda_2$ sajátértékéhez tartozó sajátvektor, azaz $G^T x_2 = \lambda_2 x_2$. Ha behelyettesítünk a $G = \alpha A + (1-\alpha)S$ helyettesítéssel akkor
+    	
+    	\[ (\alpha A^T + (1-\alpha) S^T ) x_2 = \lambda_2 x_2 \]
+    	
+    	\[ \alpha A^T x_2 + (1-\alpha) S^T x_2 = \lambda_2 x_2 \]
+    	 
+    	Az, előző lemmából tudjuk, hogy $S^T x_2 = 0$, ezért 
+    	
+    	\[ \alpha A^T x_2 = \lambda_2 x_2 \]
+    	
+    	Mivel az $\alpha = 0$ esetet külön bizonyítottuk, feltehetjük, hogy $\alpha \neq 0$ és oszthatunk vele.
+    	
+    	\[ A^T x_2 = \frac{\lambda_2}{\alpha} x_2 \]
+    	 
+    	Legyen $\lambda_2/\alpha = \mu$, ekkor
+    	 
+    	\[ A^T x_2 = \mu x_2 \]
+    	
+    	Látható, hogy $x_2$ valóban sajátvektora $A^T$-nek is, és a hozzátartozó sajátérték éppen $\mu = \lambda_2/\alpha$.
+    	 
+    	\phantom\qedhere
+    \end{proof}
+	
+	Az előző lemmából tudjuk, hogy $\lambda_2 = \mu \alpha$, továbbá $A$, a linkmátrix sztochasztikus, ezért $|\ \mu |\ \leq 1$. Ezekből következik, hogy $ |\ \lambda_2 |\ < \alpha $ (mivel egynél kisebb számmal kellett szorozni, hogy egyenlőek legyenek).
 \end{proof}
 
 \begin{tetel}{Ha a Google mátrix sajátértékei $ 1 > |\ \lambda_2 |\ \geq |\ \lambda_3 |\ \geq ... \geq |\ \lambda_n |\ $, akkor $\lambda_2 = \alpha$. }

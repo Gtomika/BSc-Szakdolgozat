@@ -35,6 +35,8 @@
 {{\medskip}\noindent \stepcounter{tszam}
 {\bfseries{\thetszam. Tétel: #1\\[1ex]}}}{\bigskip }
 
+\newtheorem{lemma}{Lemma}
+
 \begin{document}
 
 %FŐOLDAL ------------------------------------------------------------------
@@ -589,8 +591,7 @@ A konvergencia sebessége úgy kapcsolódik az $\alpha$ paraméterhez, hogy $\al
 	\vspace{0.1cm}
 	Az általános $0 < \alpha < 1$ esetet a következő lemmák segítségével igazoljuk. 
 	
-	\newtheorem{lemma}{Lemma}
-	\begin{lemma}
+	\begin{lemma}\label{orthogonal_lemma}
 	 	A $G^T$ mátrix $\lambda_2$ sajátértékhez tartozó sajátvektor (legyen $x_2$) ortogonális az $e$ vektorra, vagyis $e^T x_2 = 0$.
 	\end{lemma}
 	\begin{proof}
@@ -617,10 +618,10 @@ A konvergencia sebessége úgy kapcsolódik az $\alpha$ paraméterhez, hogy $\al
 	\end{proof}
 	
 	\begin{lemma}
-		$x^2$ vektor sajátvektora lesz $A$-nak is, és ha a hozzá tartozó sajátérték $\mu$, akkor $\mu = \lambda_2 / \alpha$. 
+		$x_2$ vektor sajátvektora lesz $A$-nak is, és ha a hozzá tartozó sajátérték $\mu$, akkor $\mu = \lambda_2 / \alpha$. 
 	\end{lemma}
     \begin{proof}
-    	Az $x_2$ vektor a $G^T$ mátrix $\lambda_2$ sajátértékéhez tartozó sajátvektor, azaz $G^T x_2 = \lambda_2 x_2$. Ha behelyettesítünk a $G = \alpha A + (1-\alpha)S$ helyettesítéssel akkor
+    	Az $x_2$ vektor a $G^T$ mátrix $\lambda_2$ sajátértékéhez tartozó sajátvektor, azaz $G^T x_2 = \lambda_2 x_2$. Ha behelyettesítünk a $G = \alpha A + (1-\alpha)S$ helyettesítéssel, akkor
     	
     	\[ (\alpha A^T + (1-\alpha) S^T ) x_2 = \lambda_2 x_2 \]
     	
@@ -639,17 +640,53 @@ A konvergencia sebessége úgy kapcsolódik az $\alpha$ paraméterhez, hogy $\al
     	\[ A^T x_2 = \mu x_2 \]
     	
     	Látható, hogy $x_2$ valóban sajátvektora $A^T$-nek is, és a hozzátartozó sajátérték éppen $\mu = \lambda_2/\alpha$.
-    	 
     	\phantom\qedhere
     \end{proof}
 	
 	Az előző lemmából tudjuk, hogy $\lambda_2 = \mu \alpha$, továbbá $A$, a linkmátrix sztochasztikus, ezért $|\ \mu |\ \leq 1$. Ezekből következik, hogy $ |\ \lambda_2 |\ < \alpha $ (mivel egynél kisebb számmal kellett szorozni, hogy egyenlőek legyenek).
 \end{proof}
 
-\begin{tetel}{Ha a Google mátrix sajátértékei $ 1 > |\ \lambda_2 |\ \geq |\ \lambda_3 |\ \geq ... \geq |\ \lambda_n |\ $, akkor $\lambda_2 = \alpha$. }
+A bizonyítás során azért nem foglalkoztunk az $\alpha = 1$ esettel, mert ekkor a Google mátrix a linkmátrix lesz, és még a konvergenciát sem tudjuk garantálni.
+
+\begin{tetel}{Ha a Google mátrix $G = \alpha A + (1-\alpha)S$ ($\alpha \in [0,1)$, $G \in \mathbb{R}^n$) sajátértékei $ 1 > |\ \lambda_2 |\ \geq |\ \lambda_3 |\ \geq ... \geq |\ \lambda_n |\ $, akkor $\lambda_2 = \alpha$. }
 \end{tetel}
 \begin{proof}
-	?
+	Az $\alpha = 0$ esetre a tételt már az előző bizonyítás elején beláttuk.
+	
+	A $0 < \alpha < 1$ esetet a következő két lemma segítségével igazoljuk.
+	
+	\vspace{0.1cm}
+	\textbf{Jelölések:} Legyen $y_i$ az $A^T$ transzponált linkmátrix $i.$ sajátvektora, $\mu_i$ pedig az ehhez tartozó sajátérték. Legyen $x_i$ a $G^T$ transzponált Google mátrix $i.$ sajátvektora. Az előző bizonyításhoz hasonlóan $S = e e_p^T$, ahol $e$ a csupa egyeseket, $e_p$ pedig a csupa $\frac{1}{n}$ komponenseket tartalmazó oszlopvektorok.
+	
+	\begin{lemma}
+		$A^T$ bármely $y_i$ sajátvektora, amelyik ortogonális az $e$ vektorra, a $G^T$ mátrixnak is sajátvektora lesz. Továbbá ekkor $\lambda_i = \alpha \mu_i$.
+	\end{lemma}
+	\vspace{-0.5cm}
+	\begin{proof}
+		Tudjuk, hogy $e^T y_i = 0$, ezért
+		
+		\[ S^T y_i = (e e_p^T)^T y_i = e_p e^T y_i = 0 \]
+		
+		Ha kiírjuk a $G^T y_i$ szorzatot, akkor
+		
+		\[ (\alpha A^T + (1-\alpha) S^T ) y_i = \alpha A^T y_i + (1-\alpha) S^T y_i = \alpha A^T y_i \]
+		
+		A sajátérték definíciója alapján $A^T y_i = \mu_i y_i$, ezért a fenti kifejezés megegyezik $\alpha \mu_i y_i$-vel. Tehát
+		
+		\[ G^T y_i = (\alpha \mu_i) y_i \]
+		
+		vagyis $y_i$ valóban sajátvektora lesz $G^T$-nek a $\alpha \mu_i$ sajátértékkel.
+		\phantom\qedhere
+	\end{proof} 
+
+	\begin{lemma}
+		$\exists i \in \{ 1,2,...,n \}$, hogy $\lambda_i = \alpha$.
+	\end{lemma}
+	\vspace{-0.5cm}
+	\begin{proof}
+		
+		\phantom\qedhere
+	\end{proof} 
 \end{proof}
 
 Láttuk tehát, hogy $\alpha$ a vizsgált mátrix második legnagyobb sajátértéke, ezért az \ref{konvergencia_sebesseg} alfejezet értelmében a hatványiteráció konvergenciájának sebessége függ $\alpha$-tól. Minél közelebb van egyhez, annál lassabb lesz a konvergencia.

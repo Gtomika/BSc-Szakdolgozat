@@ -362,7 +362,7 @@ Beláttuk, hogy az egy minden esetben sajátérték, és azt is hogy ennél (abs
 
 \subsection{A hatványiteráció}
 
-Ha sok oldalból álló webek esetén akarjuk meghatározni a rangokat, akkor a pontos megoldást adó módszerek nagyon lassúak, ezért közelítő, iteratív módszerre van szükség. Ideális választás a hatványiteráció, mert ebben az esetben elég tárolni mindössze a linkmátrix transzponáltját, és a PageRank vektor éppen aktuális iterációját a számoláshoz.
+Ha sok oldalból álló webek esetén akarjuk meghatározni a rangokat, akkor a pontos megoldást adó módszerek nagyon lassúak, ezért közelítő, iteratív módszerre van szükség. Ideális választás a hatványiteráció alkalmazása az $A^T$ mátrixra, mert ebben az esetben elég tárolni mindössze a linkmátrix transzponáltját, és a PageRank vektor éppen aktuális iterációját a számoláshoz.
 
 \vspace{0.2cm}
 A hatványiteráció általános alakja:
@@ -446,6 +446,27 @@ Ez logikus, hiszen az invariáns eloszlás mutatja, hogy hosszú távon az idő 
 
 \vspace{0.1cm}
 \textbf{Megjegyzés:} Nem minden webhez rendeletünk egy ilyen Markov-láncot. A lógó oldalakat tartalmazó webek linkmátrixában vannak csupa nulla sorok, melyek elrontják a mátrix sztochasztikusságát, de a \ref{link_web_logooldal} alfejezetben megadott helyettesítéssel kapott webek már megfelelőek. 
+\vspace{0.1cm}
+
+\vspace{0.1cm}
+\textbf{Megjegyzés:} Az 1 sajátérték multiplicitása és kapcsolata a webhez rendel Markov-lánccal.
+\vspace{0.1cm}
+
+Itt kimondunk egy tételt, amelynek segítségével meghatározhatjuk az 1 sajátérték multiplicitását a linkmátrix (mint átmenetmátrix) bizonyos tulajdonságaiból. Ez a későbbiekben (\ref{alfa_sajatertek}. fejezet) hasznos lesz. 
+
+\begin{definicio}{Zárt részhalmaz}
+	Egy átmenetmátrix elemeinek egy $L$ részhalmaza zárt, hogyha $i \in L$ és $j \notin L$, akkor az $(i,j)$ átmenetvalószínűség nulla.  
+\end{definicio}
+
+\begin{definicio}{Irreducibilis zárt részhalmaz}
+	Egy átmenetmátrix elemeinek egy $L$ részhalmaza irreducibilis zárt, hogyha zárt és egyetlen valódi részhalmaza sem zárt.
+\end{definicio}
+
+\begin{tetel}
+	{Egy átmenetmátrix esetén az 1 sajátérték multiplicitása megegyezik a mátrixban lévő irreducibilis zárt részhalmazok számával.}
+\end{tetel}
+
+A tétel igazolása a \cite{irreducible_closed}. forrás 126. oldalán található.
 
 \subsection{A konvergencia garantálása}\label{konvergencia_garantalas}
 
@@ -504,7 +525,13 @@ Az így kapott Markov-lánc átmenetmátrixa éppen a Google mátrix lesz, ahol 
 \subsection{A Google mátrix tulajdonságai}
 %nem ritka, sztochasztikus, stb
 
-A Google mátrix szintén sztochasztikus lesz, bármely $\alpha$ paraméter esetén. A linkmátrixról ($A$) és a csupa $\frac{1}{n}$ komponensből álló ($S$) mátrixokról tudjuk, hogy sztochasztikusak, ezért $\alpha A$ és $(1-\alpha)S$ mátrixok sorösszegei rendre $\alpha$ és $(1-\alpha)$. A Google mátrix esetén így a sorok összege $\alpha+(1-\alpha) = 1$ lesz.
+A Google mátrix szintén sztochasztikus lesz, bármely $\alpha$ paraméter esetén. A linkmátrixról ($A$) és a csupa $1/n$ komponensből álló ($S$) mátrixokról tudjuk, hogy sztochasztikusak, ezért $\alpha A$ és $(1-\alpha)S$ mátrixok sorösszegei rendre $\alpha$ és $(1-\alpha)$. A Google mátrix esetén így a sorok összege $\alpha+(1-\alpha) = 1$ lesz.
+
+A hatványiterációt nem a Google mátrixra, hanem a transzponáltjára kell alkalmaznunk, ami a linkmátrix és az $S$ mátrix segítségével a 
+
+\[ G^T = (\alpha A + (1-\alpha)S)^T = \alpha A^T + (1-\alpha) S^T \]
+
+alakban írható fel.
 
 \vspace{0.2cm}
 
@@ -512,13 +539,13 @@ A \ref{linkmatrix} alfejezetben említettük, hogy a linkmátrix általában egy
 
 A Google mátrix sűrűségéből adódó számítási problémát ki lehet küszöbölni. Ha hatványiteráció $i+1$.-ik lépése
 
-\[ x^{i+1} = G x^i \]
+\[ x^{i+1} = G^T x^i \]
 
 ahol $x$ a PageRank vektor, akkor ez ekvivalens a következő alakkal:
 
-\[ x^{i+1} = \alpha A x^i + (1-\alpha)S\] 
+\[ x^{i+1} = \alpha A^T x^i + (1-\alpha) S^T \] 
 
-Először tehát a linkmátrix skalár szorosával szorozzuk a PageRank vektor jelenlegi iterációját, majd ezután adjuk hozzá a csupa $\frac{1-\alpha}{n}$ elemekből álló mátrixot. Ekkor az elvégzett mátrixszorzásban már nem szerepel a sűrű Google mátrix, de az iteráció eredménye ugyanaz, mintha azzal szoroztunk volna. 
+Először tehát $A^T$ skalár szorosával szorozzuk a PageRank vektor jelenlegi iterációját, majd ezután adjuk hozzá a csupa $\frac{1-\alpha}{n}$ elemekből álló mátrixot. Ekkor az elvégzett mátrixszorzásban már nem szerepel a sűrű Google mátrix, de az iteráció eredménye ugyanaz, mintha azzal szoroztunk volna. 
 
 \vspace{0.2cm}
 A linkmátrixhoz hasonlóan a Google mátrixhoz is rendelhető egy Markov-lánc, mivel a fejezet elején láttuk, hogy ez is sztochasztikus mátrix. Az ehhez a mátrixhoz tartozó Markov-lánc néhány tulajdonságát a következő tétel mondja ki.
@@ -572,9 +599,9 @@ ezért a fentebb említett legrosszabb eset a következőképpen módosul:
 
 Minél közelebb van tehát a második legnagyobb sajátérték egyhez (a domináns sajátértékhez), annál lassabb lesz a konvergencia sebessége.
 
-\subsection{$\alpha$ mint sajátérték}
+\subsection{$\alpha$ mint sajátérték}\label{alfa_sajatertek}
 
-A konvergencia sebessége úgy kapcsolódik az $\alpha$ paraméterhez, hogy $\alpha$ maga is sajátérték. Ezt az alábbi két tétel igazolja \cite{secondeigenvalue}. 
+A konvergencia sebessége úgy kapcsolódik az $\alpha$ paraméterhez, hogy $\alpha$ maga is sajátérték (a legtöbb esetben). Ezt az alábbi két tétel igazolja \cite{secondeigenvalue}. 
 
 \vspace{0.1cm}
 \begin{tetel}{Ha a Google mátrix $G = \alpha A + (1-\alpha)S$ ($\alpha \in [0,1)$, $G \in \mathbb{R}^n$) sajátértékei $ 1 > |\ \lambda_2 |\ \geq |\ \lambda_3 |\ \geq ... \geq |\ \lambda_n |\ $, akkor $\lambda_2 \leq \alpha$. }
@@ -648,7 +675,7 @@ A konvergencia sebessége úgy kapcsolódik az $\alpha$ paraméterhez, hogy $\al
 
 A bizonyítás során azért nem foglalkoztunk az $\alpha = 1$ esettel, mert ekkor a Google mátrix a linkmátrix lesz, és még a konvergenciát sem tudjuk garantálni.
 
-\begin{tetel}{Ha a Google mátrix $G = \alpha A + (1-\alpha)S$ ($\alpha \in [0,1)$, $G \in \mathbb{R}^n$) sajátértékei $ 1 > |\ \lambda_2 |\ \geq |\ \lambda_3 |\ \geq ... \geq |\ \lambda_n |\ $, akkor $\lambda_2 = \alpha$. }
+\begin{tetel}{Ha a Google mátrix $G = \alpha A + (1-\alpha)S$ ($\alpha \in [0,1)$, $G \in \mathbb{R}^n$) sajátértékei $ 1 > |\ \lambda_2 |\ \geq |\ \lambda_3 |\ \geq ... \geq |\ \lambda_n |\ $ és $A$-ban van legalább kettő irreducibilis zárt részhalmaz, akkor $\lambda_2 = \alpha$. }
 \end{tetel}
 \begin{proof}
 	Az $\alpha = 0$ esetre a tételt már az előző bizonyítás elején beláttuk.
@@ -688,6 +715,8 @@ A bizonyítás során azért nem foglalkoztunk az $\alpha = 1$ esettel, mert ekk
 		\phantom\qedhere
 	\end{proof} 
 \end{proof}
+
+A tétel feltétele, vagyis az, hogy a linkmátrixban van legalább kettő irreducibilis zárt részhalmaz ugyan nem teljesül minden web linkmátrixára, de a sok oldalból álló webek estén szinte bisztosan igaz lesz, a linkmátrix \ref{linkmatrix}. fejezet megjegyzésében említett ritkasága miatt.
 
 Láttuk tehát, hogy $\alpha$ a vizsgált mátrix második legnagyobb sajátértéke, ezért az \ref{konvergencia_sebesseg} alfejezet értelmében a hatványiteráció konvergenciájának sebessége függ $\alpha$-tól. Minél közelebb van egyhez, annál lassabb lesz a konvergencia.
 

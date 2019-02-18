@@ -436,7 +436,7 @@ Ezek az eseten olyan webek esetén fordulnak elő, amelyek valójában több egy
 
 A fenti ábrán látható web linkmátrixának sajátértékei között szerepel a -1 és az 1 is, kétszeres multiplicitással.
 
-\subsection{Webekhez rendelt Markov-láncok}
+\subsection{Webekhez rendelt Markov-láncok}\label{markov_lancok}
 
 Vegyünk egy lógó oldalt nem tartalmazó webet. Legyen adott egy úgynevezett véletlen szörföző, aki minden lépésben egyenletes eloszlás szerint választ a jelenlegi oldalon lévő linkek közül és továbbhalad a választott link által mutatott oldalra. A kezdeti eloszlás szintén legyen egyenletes.
 
@@ -711,14 +711,44 @@ A bizonyítás során azért nem foglalkoztunk az $\alpha = 1$ esettel, mert ekk
 	\end{lemma}
 	\vspace{-0.5cm}
 	\begin{proof}
+		Keressük az $x$ vektort, mely sajátvektora $P$-nek és ortogonális az $e$ vektorra.
 		
+		A \ref{markov_lancok}. fejezetben lévő tétel alapján az 1 sajátérték multiplicitása legalább kettő, mivel legalább ennyi irreducibilis zárt részhalmaz van $A^T$ mátrixban. Ekkor biztosan létezik két lineárisan független sajátvektor, melyek az egy sajátértékhez tartoznak, legyenek ezek $y_1,y_2$. Ekkor
+		
+		\[ k_1 = y_1^T e \]
+		\[ k_2 = y_2^T e \]
+		
+		Definiáljuk a keresett $x$ vektort a következőképpen:
+		
+		\begin{equation}
+		x=\begin{cases}
+		\frac{y_1}{k_1} - \frac{y_2}{k_2}, & \text{ha $k_1,k_2 \neq 0$}.\\
+		y_1, & \text{ha $k_1 = 0$}. \\
+		y_2, & \text{ha $k_2 = 0$}. 
+		\end{cases}
+		\end{equation}
+		
+		Ekkor $x$ sajátvektora $A^T$-nek, az 1 sajátértékhez tartozik és ortogonális $e$-re. A második és harmadik esetben ez egyértelműen látszik, az első esetben azért igaz, mert 
+		
+		\[ A^T (\frac{y_1}{k_1} - \frac{y_2}{k_2}) = \frac{y_1}{k_1} - \frac{y_2}{k_2} \] 
+		
+		\[ \frac{A^T y_1}{k_1} - \frac{A^T y_2}{k_2} = \frac{y_1}{k_1} - \frac{y_2}{k_2} \]
+		
+		és $y_1,y_2$-ről tudjuk, hogy sajátvektorai $A^T$-nek az 1 sajátértékkel ezért $A^T y_1 = y_1$, $A^T y_2 = y_2$ és az egyenlőség teljesül. 
+		
+		Az előző lemma miatt ekkor $x$ $G^T$-nek is sajátvektora lesz, méghozzá az $\alpha$ sajátértékkel.  
 		\phantom\qedhere
 	\end{proof} 
+
+	Ekkor tehát $G^T$-nek biztosan sajtértéke $\alpha$ és $\lambda_2 \geq \alpha$, mivel $\lambda_2$ a második legnagyobb sajátérték, $\alpha$ pedig biztosan nem lehet a legnagyobb, mert az egy. Az előző tétel viszont garantálja, hogy $\lambda_2 \leq \alpha$. A két egyenlőtlenség csak akkor teljesülhet egyszerre, ha $\lambda_2 = \alpha$.
 \end{proof}
+\vspace{0.2cm}
 
 A tétel feltétele, vagyis az, hogy a linkmátrixban van legalább kettő irreducibilis zárt részhalmaz ugyan nem teljesül minden web linkmátrixára, de a sok oldalból álló webek estén szinte bisztosan igaz lesz, a linkmátrix \ref{linkmatrix}. fejezet megjegyzésében említett ritkasága miatt.
 
 Láttuk tehát, hogy $\alpha$ a vizsgált mátrix második legnagyobb sajátértéke, ezért az \ref{konvergencia_sebesseg} alfejezet értelmében a hatványiteráció konvergenciájának sebessége függ $\alpha$-tól. Minél közelebb van egyhez, annál lassabb lesz a konvergencia.
+
+\vspace{0.2cm}\textbf{Megjegyzés:} Ha a második tétel feltétele nem is teljesül, az első tétel akkor is érvényes. Ez azt jelenti, hogy nem ismerjük ugyan pontosan a második legnagyobb sajátértéket (és ezzel együtt a konvergencia sebességét), de felülről tudjuk becsülni $\alpha$-val.
 
 %hivatkozások ---------------------------------------------------------
 \bibliography{hivatkozasok}

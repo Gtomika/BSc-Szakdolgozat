@@ -11,6 +11,7 @@
 \usepackage{graphicx}
 \usepackage{tabu}
 \usepackage{makecell}
+\usepackage{enumitem}
 
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -99,7 +100,7 @@ A PageRank algoritmust Larry Page és Sergei Brin alkották meg 1998-ban, a Stan
 
 Larry Page és Sergei Brin találmánya olyan jól alkalmazhatónak bizonyult, hogy Google néven saját vállalkozást alapítottak. A cég keresőmotorjának alapja máig a PageRank algoritmus, skálázhatóságát mutatja, hogy a Google ma már több mint 130 billió weboldalt indexel. 
 
-\subsection{PageRank program}
+\subsection{PageRank program}\label{program}
 
 Dolgozatomhoz grafikus felhasználói felülettel ellátott asztali alkalmazást is készítettem, Java nyelven. Ez a program képes előre megadott oldalszámú webet különböző paraméterek alapján véletlenszerűen generálni, majd ehhez PageRankot számolni. A 150 oldalnál kisebb méretű webekhez tartozó mátrixokat meg is tudja jeleníteni.
 
@@ -244,12 +245,12 @@ Egy web linkmátrixa az oldalak közötti kapcsolatokat reprezentálja mátrixos
 \begin{definicio}{Linkmátrix}
 	Legyen adott egy web ahol az oldalak halmaza V. Ennek linkmátrixa legyen $A = (a_{i,j}) \quad i,j = 0,1,...,|\ V |\ $, ahol
 	
-	\begin{equation}
+	\begin{equation*}
 	a_{i,j}=\begin{cases}
 	\frac{1}{ |\ v_i |\ }, & \text{ha $(v_i,v_j) \in L$}.\\
 	0, & \text{egyébként}.
 	\end{cases}
-	\end{equation}
+	\end{equation*}
 	
 \end{definicio}
 
@@ -522,7 +523,7 @@ Az így kapott Markov-lánc átmenetmátrixa éppen a Google mátrix lesz, ahol 
 
 \section{A Google mátrix és az $\alpha$ paraméter}
 
-\subsection{A Google mátrix tulajdonságai}
+\subsection{A Google mátrix tulajdonságai}\label{google_matrix_tul}
 %nem ritka, sztochasztikus, stb
 
 A Google mátrix szintén sztochasztikus lesz, bármely $\alpha$ paraméter esetén. A linkmátrixról ($A$) és a csupa $1/n$ komponensből álló ($S$) mátrixokról tudjuk, hogy sztochasztikusak, ezért $\alpha A$ és $(1-\alpha)S$ mátrixok sorösszegei rendre $\alpha$ és $(1-\alpha)$. A Google mátrix esetén így a sorok összege $\alpha+(1-\alpha) = 1$ lesz.
@@ -720,13 +721,13 @@ A bizonyítás során azért nem foglalkoztunk az $\alpha = 1$ esettel, mert ekk
 		
 		Definiáljuk a keresett $x$ vektort a következőképpen:
 		
-		\begin{equation}
+		\begin{equation*}
 		x=\begin{cases}
 		\frac{y_1}{k_1} - \frac{y_2}{k_2}, & \text{ha $k_1,k_2 \neq 0$}.\\
 		y_1, & \text{ha $k_1 = 0$}. \\
 		y_2, & \text{ha $k_2 = 0$}. 
 		\end{cases}
-		\end{equation}
+		\end{equation*}
 		
 		Ekkor $x$ sajátvektora $A^T$-nek, az 1 sajátértékhez tartozik és ortogonális $e$-re. A második és harmadik esetben ez egyértelműen látszik, az első esetben azért igaz, mert 
 		
@@ -749,6 +750,50 @@ A tétel feltétele, vagyis az, hogy a linkmátrixban van legalább kettő irred
 Láttuk tehát, hogy $\alpha$ a vizsgált mátrix második legnagyobb sajátértéke, ezért az \ref{konvergencia_sebesseg} alfejezet értelmében a hatványiteráció konvergenciájának sebessége függ $\alpha$-tól. Minél közelebb van egyhez, annál lassabb lesz a konvergencia.
 
 \vspace{0.2cm}\textbf{Megjegyzés:} Ha a második tétel feltétele nem is teljesül, az első tétel akkor is érvényes. Ez azt jelenti, hogy nem ismerjük ugyan pontosan a második legnagyobb sajátértéket (és ezzel együtt a konvergencia sebességét), de felülről tudjuk becsülni $\alpha$-val.
+
+\section{Algoritmus a PageRank meghatározására}
+
+Megadunk egy algoritmust a PageRank kiszámolására és a weboldalak fontosság szerinti sorba állítására, ami az előző fejezetekben leírtakon alapul. Az \ref{program} alfejezetben említett program is ezt a módszert használja.
+
+\subsection{Algoritmus általános web esetén}
+
+Legyen adott egy tetszőleges, $n$ oldalból álló web.
+
+\begin{enumerate}[label=(\Roman*)]
+	\item Adjuk meg a webhez tartozó $A = (a_{i,j})$ linkmátrixot, a \ref{linkmatrix} fejezetben megadott képlet alapján: 
+	
+	\begin{equation*}
+	a_{i,j}=\begin{cases}
+	\frac{1}{ |\ v_i |\ }, & \text{ha $(v_i,v_j) \in L$}.\\
+	0, & \text{egyébként}.
+	\end{cases}
+	\end{equation*}
+	
+	A használt jelölések magyarázata a fent említett fejezetben található.
+	
+	\item Végezzük el a helyettesítést a lógó oldalak kiküszöbölésére, azaz ha az $n \times n$-es linkmátrixban van csupa nulla sor, azt cseréljük le $1/n$ elemekből álló sorra.
+	
+	\item Válasszunk egy $\alpha \in (0,1)$ paramétert, figyelembe véve azt, hogy a túl kicsi érték elnyomja a linkek szerkezetét, az egyhez túl közeli pedig nagyon lelassítja a hatványiteráció konvergenciáját. Konstruáljuk meg a Google mátrixot ezzel a paraméterrel:
+	
+	\[G = \alpha A + (1-\alpha)S\]
+	
+	ahol $S$ egy csupa $1/n$ elemekből álló $n \times n$-es mátrix. 
+	
+	\item Végezzük a hatványiterációt a $G^T$ mátrixon, amíg a két iterációs lépés közötti különbség nem csökken valami kicsi $\epsilon$ érték alá. 
+	
+	\textbf{Megjegyzés:} Az iterációt ne közvetlenül a sűrű $G^T$ mátrixon, hanem az \ref{google_matrix_tul} alfejezetben említett
+	
+	\[ x^{i+1} = \alpha A^T x^i + (1-\alpha) S^T \] 
+	
+	felbontás szerint végezzük, mert így csak a ritka linkmátrixal kell szorozni.
+	
+	\item Az iteráció eredménye a PageRank vektor közelítése, ahol az $i.$ komponens az $i.$ oldal fontosságát adja meg. Rendezzük a komponenseket csökkenő sorrendbe, így kapjuk az oldalak fontossági rangsorát.
+	
+\end{enumerate}
+
+\subsection{Példa}
+
+Végrehajtjuk az előző alfejezetben leírt algoritmust egy konkrét webre.
 
 %hivatkozások ---------------------------------------------------------
 \bibliography{hivatkozasok}

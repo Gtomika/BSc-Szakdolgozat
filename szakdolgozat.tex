@@ -30,12 +30,7 @@
 {{\medskip}\noindent \stepcounter{definicioszam}
 {\bfseries{\thedefinicioszam. Definíció: #1\\[1ex]}}}{\bigskip }
 
-%számláló és formázás tételeknek: \begin{tetel}
-\newcounter{tszam}
-\newenvironment{tetel}[1]
-{{\medskip}\noindent \stepcounter{tszam}
-{\bfseries{\thetszam. Tétel: #1\\[1ex]}}}{\bigskip }
-
+\newtheorem{tetel}{Tétel}
 \newtheorem{lemma}{Lemma}
 
 \begin{document}
@@ -88,9 +83,9 @@
 
 \section{Bevezető}
 
-Dolgozatom témája a PageRank algoritmus, melynek legfőbb alkalmazási területe az internetes weboldalak bizonyos szempontok szerinti rangsorolása.
+Dolgozatom témája a PageRank, és az ennek számolásához használt algoritmus, melynek legfőbb alkalmazási területe az internetes weboldalak bizonyos szempontok szerinti rangsorolása.
 
-Ebben a fejezetben röviden ismertetem a PageRank algoritmus történetét és megemlítek egy PageRank számolásához használható, általam készített programot. A második fejezetben a PageRank algoritmus tárgyalásához szükséges alapvető fogalmakat és definíciókat vezetek be. 
+Ez a fejezet röviden ismerteti a PageRank történetét és megemlít egy, a PageRank számolásához használható, általam készített programot. A következő fejezet a PageRank tárgyalásához szükséges alapvető fogalmakat és definíciókat vezet be. 
 
 \subsection{A PageRank algoritmus története}
 
@@ -110,7 +105,7 @@ A program és annak forráskódja is letölthető a következő oldalról:
 \textit{https://github.com/Gtomika/PageRank/releases/tag/v4.1}
 \vspace{0.3 cm}
 
- A futtatáshoz a számítógépen telepítve kell hogy legyen a Java.
+ A futtatáshoz a számítógépen telepítve kell hogy legyen a Java 8-as, vagy újabb verziója.
 
 \section{Alapfogalmak és definíciók}
 
@@ -119,11 +114,11 @@ A program és annak forráskódja is letölthető a következő oldalról:
 Ahhoz hogy PageRankról beszélhessünk, először a web fogalmát kell bevezetni.
 
 \begin{definicio}{Linkhalmaz}
-	Legyen V a weboldalak halmaza. Ekkor $L \subset V \times V$ \textbf{linkhalmaz}ban $(v_1,v_2)$ ($v_1, v_2 \in V$ pontosan akkor van benne ha $v_1$ linkel $v_2$-re. 
+	Legyen V a weboldalak halmaza. Ekkor $L \subset V \times V$ \textbf{linkhalmaz}ban $(v_1,v_2) $ ($v_1, v_2) \in V$ pontosan akkor van benne ha $v_1$ linkel $v_2$-re. 
 \end{definicio}
 
 \begin{definicio}{Web}
-	Legyen V a weboldalak halmaza, L pedig az ehhez tartozó linkhalmaz. Ekkor a \textbf{web} egy irányított gráf, melynek csúcsai V elemei, élei pedig L elemei, ahol ha $v_1, v_2 \in V$ és $(v_1,v_2) \in L$, akkor az él $v_1$-ből $v_2$-be mutat. 
+	Legyen $V$ a weboldalak halmaza, $L$ pedig az ehhez tartozó linkhalmaz. Ekkor a \textbf{web} egy irányított gráf, melynek csúcsai $V$ elemei, élei pedig $L$ elemei, ahol ha $v_1, v_2 \in V$ és $(v_1,v_2) \in L$, akkor az él $v_1$-ből $v_2$-be mutat. 
 \end{definicio}
 
 \begin{figure}[h]
@@ -215,39 +210,34 @@ Egy oldal fontossága azon múlik, hogy mennyi oldal linkel rá, és hogy ezek m
 Egy webet el lehet úgy is képzelni, mint az oldalak demokráciáját ahol minden oldalnak szavazata van és ezt a szavazatot (és még a kapott szavazatokat is) továbbosztja úgy, hogy linkel a többi oldalra.
 
 \begin{definicio}{Weboldal PageRankja}
-	Legyen adott egy web, V az oldalak, L a linkek halmaza.
-	Legyen $v_i \in V$ oldal PageRankja $r(v_i)$, az oldalról kimenő linkek száma pedig $ |\ v_i |\ $. 
+	Legyen adott egy web, $V$ az oldalak, $L$ a linkek halmaza.
+	Legyen $v_i \in V$ oldal PageRankja $r(v_i)$, az oldalról kimenő linkek száma pedig $ |v_i| $. 
 	
 	Jelölje $B_i \subset V$ azon oldalak halmazát amelyen linkelnek $v_i$-re, azaz
 	\[B_i = \{ v_j \in V: \exists l \in L, \quad l = (v_j,v_i) \} \]
-	
 	Ekkor bármely $v_i$ oldal PageRankját megkapjuk a következő módon:
 	
-	\[ r(v_i) = \sum_{v_j \in B_i} \frac{r(v_j)}{ |\ v_j|\ } \]
+	\[ r(v_i) = \sum_{v_j \in B_i} \frac{r(v_j)}{ |v_j| } \]
 \end{definicio}
 
 A definícióban megjelenik az is, hogy egy oldalnak mennyi kimenő linkje van. Minél több oldalra linkel, annál kevesebbet fog számítani az ő linkjének értéke. Ez ellensúlyozza a már említett link farmokat.
 
 A szummában szereplő oldalak egyikénél sem lehet a kimenő linkek száma nulla, mert mindegyik oldal eleme a $B_i$ halmaznak, azaz legalább $v_i$-re linkelnek. Előfordulhat, hogy egy oldalra nincs egyetlen link sem. A definícióban ilyenkor egy üres összeg szerepel, azaz az oldal rangja 0.
 
-\bigskip
-
 A PageRank definíciója tehát rekurzív. Egy oldal rangjának meghatározásához minden rá linkelő oldal rangját ismernünk kell. Ha a webünk $n$ db oldalt tartalmaz, akkor a definíció meghatároz $n$ db lineáris egyenletet.
 
 A cél az, hogy olyan algoritmust adjunk meg, amely egyrészt pontosan meghatározza minden oldal PageRankját, másrészt nagyon nagy $n$-re is hatékonyan működik, mind idő-, mind tárigény szempontjából. 
 
-\section{A sajátértékprobléma}
-
-\subsection{Linkmátrix és kapcsolata az egyenletrendszerrel}\label{linkmatrix}
+\subsection{Linkmátrix}\label{linkmatrix}
 
 Egy web linkmátrixa az oldalak közötti kapcsolatokat reprezentálja mátrixos formában.
 
 \begin{definicio}{Linkmátrix}
-	Legyen adott egy web ahol az oldalak halmaza V. Ennek linkmátrixa legyen $A = (a_{i,j}) \quad i,j = 0,1,...,|\ V |\ $, ahol
+	Legyen adott egy web ahol az oldalak halmaza $V$. Ennek linkmátrixa legyen $A = (a_{i,j}) \quad i,j = 1,...,|V| $, ahol
 	
 	\begin{equation*}
 	a_{i,j}=\begin{cases}
-	\frac{1}{ |\ v_i |\ }, & \text{ha $(v_i,v_j) \in L$}.\\
+	\frac{1}{ |v_i| }, & \text{ha $(v_i,v_j) \in L$}.\\
 	0, & \text{egyébként}.
 	\end{cases}
 	\end{equation*}
@@ -257,38 +247,37 @@ Egy web linkmátrixa az oldalak közötti kapcsolatokat reprezentálja mátrixos
 Tehát a linkmátrix sorai kifejezik azt, hogy egy oldal mennyi és melyik másik oldalakra linkel. Megfigyelhető, hogy amennyiben a web nem tartalmaz lógó oldalt, úgy a linkmátrix sztochasztikus lesz, azaz sorainak összege mindig 1, amennyiben pedig tartalmaz ilyen oldalt, a \ref{link_web_logooldal} alfejezetben megadott helyettesítéssel kapott mátrix már sztochasztikus lesz. 
 
 \bigskip
-
 \begin{minipage}{0.4\textwidth}
 	\begin{center}
-	\begin{tikzpicture}[
-	roundnode/.style={circle, draw=blue!60, fill=blue!5, very thick, minimum size=7mm},
-	]
-	%Nodes
-	\node[roundnode]      (c1)                     {1};
-	\node[roundnode]      (c2)       [right=of c1] {2};
-	\node[roundnode]      (c3)       [below=of c2] {3};
-	\node[roundnode]      (c4)       [below=of c1] {4};
-	
-	%Lines
-	\draw[->,thick] (c1) -- (c3);
-	\draw[->,thick] (c1) -- (c4);
-	\draw[->,thick] (c2) -- (c3);
-	\draw[->,thick] (c4) -- (c2);
-	\draw[->,thick] (c3) -- (c1);
-	\draw[->,thick] (c2) -- (c1);
-	\end{tikzpicture}
+		\begin{tikzpicture}[
+		roundnode/.style={circle, draw=blue!60, fill=blue!5, very thick, minimum size=7mm},
+		]
+		%Nodes
+		\node[roundnode]      (c1)                     {1};
+		\node[roundnode]      (c2)       [right=of c1] {2};
+		\node[roundnode]      (c3)       [below=of c2] {3};
+		\node[roundnode]      (c4)       [below=of c1] {4};
+		
+		%Lines
+		\draw[->,thick] (c1) -- (c3);
+		\draw[->,thick] (c1) -- (c4);
+		\draw[->,thick] (c2) -- (c3);
+		\draw[->,thick] (c4) -- (c2);
+		\draw[->,thick] (c3) -- (c1);
+		\draw[->,thick] (c2) -- (c1);
+		\end{tikzpicture}
 	\end{center}
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
 	\begin{center}
 		\[
-	  \begin{bmatrix}
-	  	0 & 0 & \frac{1}{2} & \frac{1}{2} \\  
-	  	\frac{1}{2} & 0 & \frac{1}{2} & 0 \\
-	  	1 & 0 & 0 & 0 \\
-	    0 & 1 & 0 & 0 \\
-	  \end{bmatrix}
-	  \]
+		\begin{bmatrix}
+		0 & 0 & \frac{1}{2} & \frac{1}{2} \\  
+		\frac{1}{2} & 0 & \frac{1}{2} & 0 \\
+		1 & 0 & 0 & 0 \\
+		0 & 1 & 0 & 0 \\
+		\end{bmatrix}
+		\]
 	\end{center}
 \end{minipage}
 
@@ -296,15 +285,48 @@ Tehát a linkmátrix sorai kifejezik azt, hogy egy oldal mennyi és melyik mási
 \centerline{Példa: egy 4 oldalból álló web és linkmátrixa}
 \bigskip
 
-Kapcsolat van az oldalak PageRankjának definíciójából kapott egyenletrendszer és a linkmátrix között. Ennek segítségével az egyenletrendszer felírható a következő mátrixegyenletként:
+\subsection{Webekhez rendelt Markov-láncok}\label{markov_lancok}
 
-\[ x = x A \]
+Vegyünk egy lógó oldalt nem tartalmazó webet. Legyen adott egy úgynevezett véletlen szörföző, aki minden lépésben egyenletes eloszlás szerint választ a jelenlegi oldalon lévő linkek közül és továbbhalad a választott link által mutatott oldalra. A kezdeti eloszlás szintén legyen egyenletes.
 
-ahol x az oldalak rangjait tartalmazó vektor. Ezt átalakítva a következőt kapjuk:
+Az ehhez a Markov-lánchoz tartozó átmenetmátrix éppen a linkmátrix lesz. A \ref{linkmatrix} alfejezetben meghatároztuk, hogy a keresett PageRank vektor megoldása az $\bar{x} = \bar{x}A$ mátrixegyenletnek. Látszik, hogy ez éppen a Markov-lánc invariáns eloszlása.
 
-\[ x = A^T x \]
+Ez logikus, hiszen az invariáns eloszlás mutatja, hogy hosszú távon az idő mekkora részét tölti a véletlen szörföző az állapotokban, tehát azok az oldalak lesznek a legfontosabbak, ahol várhatóan a legtöbb időt töltjük.
 
-Ebből mátrixegyenletből látszik, hogy a keresett vektor az $A^T$ mátrix 1 sajátértékéhez tartozó sajátvektor. Természetesen egy sajátvektor bármilyen nem nulla skalár szorosa is sajátvektor ezért az egyértelműség kedvéért tegyük fel, hogy az általunk keresett vektor az, ahol a komponensek összege 1, ez a későbbiekben hasznos lesz.
+\vspace{0.1cm}
+\textbf{Megjegyzés:} Nem minden webhez rendeletünk egy ilyen Markov-láncot. A lógó oldalakat tartalmazó webek linkmátrixában vannak csupa nulla sorok, melyek elrontják a mátrix sztochasztikusságát, de a \ref{link_web_logooldal} alfejezetben megadott helyettesítéssel kapott webek már megfelelőek. 
+\vspace{0.1cm}
+
+\vspace{0.1cm}
+\textbf{Megjegyzés:} Az 1 sajátérték multiplicitása és kapcsolata a webhez rendel Markov-lánccal.
+\vspace{0.1cm}
+
+Itt kimondunk egy tételt, amelynek segítségével meghatározhatjuk az 1 sajátérték multiplicitását a linkmátrix (mint átmenetmátrix) bizonyos tulajdonságaiból. Ez a későbbiekben (\ref{alfa_sajatertek}. fejezet) hasznos lesz. 
+
+\begin{definicio}{Zárt részhalmaz}
+	Egy átmenetmátrix elemeinek egy $L$ részhalmaza zárt, hogyha $i \in L$ és $j \notin L$, akkor az $(i,j)$ átmenetvalószínűség nulla.  
+\end{definicio}
+
+\begin{definicio}{Irreducibilis zárt részhalmaz}
+	Egy átmenetmátrix elemeinek egy $L$ részhalmaza irreducibilis zárt, hogyha zárt és egyetlen valódi részhalmaza sem zárt.
+\end{definicio}
+
+\begin{tetel}
+	Egy átmenetmátrix esetén az 1 sajátérték multiplicitása megegyezik a mátrixban lévő irreducibilis zárt részhalmazok számával.
+\end{tetel}
+
+A bizonyítás az \cite{irreducible_closed}. forrásban található.
+
+\section{A sajátértékprobléma}
+
+Kapcsolat van az oldalak PageRankjának definíciójából kapott egyenletrendszer és a linkmátrix között. Ennek segítségével a PageRank definíciójából kapott egyenletrendszer felírható a következő mátrixegyenletként:
+
+\[ \bar{x} = \bar{x} A, \]
+ahol $\bar{x}$ az oldalak rangjait tartalmazó sorvektor. Ezt átalakítva a következőt kapjuk:
+
+\[ \bar{x}^T = A^T \bar{x}^T \]
+
+Ebből mátrixegyenletből látszik, hogy a keresett vektor az $A^T$ mátrix 1 sajátértékéhez tartozó sajátvektor. Mivel egy sajátvektor bármilyen nem nulla skalár szorosa is sajátvektor ezért az egyértelműség kedvéért tegyük fel, hogy az általunk keresett vektor az, ahol a komponensek összege 1. Ez azért hasznos, mert az előző fejezetben kiderült, hogy a PageRank egy invariáns eloszlás is, ahol a komponensek összege éppen 1.
 
 \vspace{0.1cm}
 \textbf{Megjegyzés:} Ha webnek az internet egy sok oldalból álló részhalmazát választjuk (márpedig a PageRankokat ilyen esetre akarjuk kiszámolni), akkor a linkmátrix nagyon ritka lesz, azaz szinte az összes eleme 0. Ennek oka, hogy az egy oldal által linkelt további oldalak száma elenyésző az összes oldal számához képest. A linkmátrix ritkasága egy számolási szempontból nagyon kedvező tulajdonság. 
@@ -313,40 +335,36 @@ Ebből mátrixegyenletből látszik, hogy a keresett vektor az $A^T$ mátrix 1 s
 
 Felmerül a kérdés, hogy minden $A^T$ mátrixnak sajátértéke-e az 1. Ehhez elég belátni, hogy az $A$ linkmátrixnak az 1 mindig sajátértéke, mivel egy mátrixnak és transzponáltjának a sajátértékei megegyeznek.
 
-\begin{tetel}{Az 1 sajátértéke minden lógó oldalt nem tartalmazó web linkmátrixának}
+\begin{tetel}
+	Az 1 sajátértéke minden lógó oldalt nem tartalmazó web linkmátrixának.
 \end{tetel}
 \vspace{-1cm}
 \begin{proof}
-	Legyen A egy tetszőleges, lógó oldalt nem tartalmazó, n oldalból álló web linkmátrixa. Ekkor az i. sorhoz $(i = 1,2,...,n)$ tartozó sorösszeg $ |\ v_i |\ \times \frac{1}{|\ v_i |\ } = 1 $, azaz minden ilyen mátrix sztochasztikus.
+	Legyen A egy tetszőleges, lógó oldalt nem tartalmazó, n oldalból álló web linkmátrixa. Ekkor az i. sorhoz $(i = 1,2,...,n)$ tartozó sorösszeg $ |v_i| \times \frac{1}{|v_i|} = 1 $, azaz minden ilyen mátrix sztochasztikus.
 	
-	Legyen e az az n komponensű oszlopvektor, melynek minden komponense 1. Ekkor az
-	
-	\[ A e = e \] 
-	
+	Legyen $\bar{e}$ az az n komponensű oszlopvektor, melynek minden komponense 1. Ekkor az
+	\[ A \bar{e} = \bar{e} \] 
 	egyenlet teljesül, mert az eredményvektor i. komponense $(i = 1,2,...,n)$
-	
-	\[ \sum_{j=1}^{n}{1 a_{i,j} } = 1 \] 
-	
-	a mátrix sztochasztikus tulajdonsága miatt. Tehát bármely linkmátrixnak ez az $e$ vektor sajátvektora, 1 sajátértékkel.
-	
+	\[ \sum_{j=1}^{n}{1 a_{i,j} } = 1, \] 
+	a mátrix sztochasztikus tulajdonsága miatt. Tehát bármely linkmátrixnak az $\bar{e}$ vektor sajátvektora, 1 sajátértékkel.
 \end{proof}
 \vspace{0.5cm}
 
-Ugyan bármely mátrixnak és transzponáltjának sajátértékei megegyeznek, de az nem igaz, hogy ezen sajátértékekhez tartozó sajátvektorok is azonosak, ezért a fenti tételben bevezetett $e$ vektor nem biztos, hogy megoldása lesz a PageRank definíciója által meghatározott egyenletrendszernek. Ezzel a megoldás egyébként is használhatatlan az oldalak rangsorolásában, mivel minden oldalnak azonos rangot ad.
+Ugyan bármely mátrixnak és transzponáltjának sajátértékei megegyeznek, de az nem igaz, hogy ezen sajátértékekhez tartozó sajátvektorok is azonosak, ezért a fenti tételben bevezetett $\bar{e}$ vektor nem biztos, hogy megoldása lesz a PageRank definíciója által meghatározott egyenletrendszernek. Ezzel a megoldás egyébként is használhatatlan az oldalak rangsorolásában, mivel minden oldalnak azonos rangot ad.
 
-A lógó oldalakat tartalmazó webek esetén az 1 nem lesz mindig sajátértéke az $A^T$ mátrixnak (lehetnek 0 összegű sorok, ami a fenti bizonyítást elrontja), azonban figyeljük meg, hogy ha elvégezzük a \ref{link_web_logooldal} alfejezetben megadott helyettesítést akkor a kapott mátrix már sztochasztikus lesz, és erre már érvényes az előbbi tétel.
+A lógó oldalakat tartalmazó webek esetén az 1 nem lesz mindig sajátértéke az $A^T$ mátrixnak (vannak 0 összegű sorok, amik a fenti bizonyítást elrontják), azonban figyeljük meg, hogy ha elvégezzük a \ref{link_web_logooldal} alfejezetben megadott helyettesítést akkor a kapott mátrix már sztochasztikus lesz, és erre már érvényes az előbbi tétel.
 
 Tehát beláttuk, hogy minden ilyen mátrixnak vagy sajátértéke az 1, vagy egy egyszerű helyettesítéssel el lehet érni, hogy az legyen. 
 
 \subsection{A legnagyobb sajátérték}\label{legnagyobb_sajatertek}
 
-\begin{tetel}{Minden lógó oldalt nem tartalmazó linkmátrix bármely $\lambda$ sajátértékre $ |\ \lambda |\ \leq 1$.}
+\begin{tetel}
+	Minden lógó oldalt nem tartalmazó linkmátrix bármely $\lambda$ sajátértékre $ |\lambda| \leq 1$.
 \end{tetel}
-\vspace{-1cm}
 \begin{proof}
 	A sajátértékek abszolút értékének felülről becsléséhez alkalmazzuk a Gershgorin körtételt. Eszerint a mátrix összes sajátértékének benne kell lennie legalább egy Gershgorin körben. A Gershgorin körtétel ugyan komplex mátrixokra is érvényes, de a linkmátrix csak valós elemeket tartalmazhat. A köröket meghatározó halmazok: 
 	
-	\[ K_i = \{ r \in \mathbb{R}: |\ r - a_{i,i} |\ \leq R_i \} \quad i = 1,2,...,n \]
+	\[ K_i = \{ r \in \mathbb{R}: |r - a_{i,i}| \leq R_i \} \quad i = 1,2,...,n \]
 	
 	ahol $R_i$ az i. sorösszeg és $a_{i,i}$ az i sorban lévő főátlóbeli elem.
 	
@@ -354,23 +372,17 @@ Tehát beláttuk, hogy minden ilyen mátrixnak vagy sajátértéke az 1, vagy eg
 	
 	Ezen állítások miatt a köröket meghatározó halmazok a következőre egyszerűsödnek minden sor esetén:
 	
-	\[ K_i = \{ r \in \mathbb{R}: |\ r |\ \leq 1 \} \quad i = 1,2,...,n \]
-	
-	Ebből következik, hogy bármely $\lambda$ sajátértékre $ |\ \lambda |\ \leq 1$-nek teljesülnie kell.
+	\[ K_i = \{ r \in \mathbb{R}: |r| \leq 1 \} \quad i = 1,2,...,n \]
+	Ebből következik, hogy bármely $\lambda$ sajátértékre $ |\lambda| \leq 1$-nek teljesülnie kell.
 \end{proof}
 
 Beláttuk, hogy az egy minden esetben sajátérték, és azt is hogy ennél (abszolút értékben) nem is lehet nagyobb sajátérték. Ebből azonban nem következik az, hogy domináns is lenne. Előfordulhat olyan eset is, hogy a -1 is sajátérték, vagy az 1 többszörös multiplicitással szerepel.
 
 \subsection{A hatványiteráció}
 
-Ha sok oldalból álló webek esetén akarjuk meghatározni a rangokat, akkor a pontos megoldást adó módszerek nagyon lassúak, ezért közelítő, iteratív módszerre van szükség. Ideális választás a hatványiteráció alkalmazása az $A^T$ mátrixra, mert ebben az esetben elég tárolni mindössze a linkmátrix transzponáltját, és a PageRank vektor éppen aktuális iterációját a számoláshoz.
-
-\vspace{0.2cm}
-A hatványiteráció általános alakja:
-
-\[ x^{i+1} = M x^i \]
-
-ahol $M \in \mathbb{R}^{n \times n}$ és $x^0 \in \mathbb{R}^n$.
+Ha sok oldalból álló webek esetén akarjuk meghatározni a rangokat, akkor a pontos megoldást adó módszerek nagyon lassúak, ezért közelítő, iteratív módszerre van szükség. Ideális választás a hatványiteráció alkalmazása az $A^T$ mátrixra, mert ebben az esetben elég tárolni mindössze a linkmátrix transzponáltját, és a PageRank vektor éppen aktuális iterációját a számoláshoz. A hatványiteráció általános alakja
+\[ \bar{x}^{i+1} = M \bar{x}^i, \]
+ahol $M \in \mathbb{R}^{n \times n}$ és $\bar{x}^0 \in \mathbb{R}^n$.
 \vspace{0.2cm}
 
 A hatványiteráció azonban a domináns sajátértékhez tartozó sajátvektorhoz konvergál. Ha ilyen nincsen, akkor nem tudjuk garantálni a konvergenciát. Ahhoz, hogy alkalmazhassuk az egyhez tartozó sajátvektor megtalálására, vagy be kell látni, hogy az 1 mindig domináns sajátérték, vagy úgy kell módosítani a linkmátrixon, hogy az legyen.
@@ -379,10 +391,7 @@ A hatványiteráció azonban a domináns sajátértékhez tartozó sajátvektorh
 
 \subsection{Gondot okozó tényezők}
 
-Amikor egy nagy webhez tartozó PageRank vektort szeretnénk közelíteni, fontos tudni, hogy az iteráció úgy fog viselkedni ahogyan várjuk.
-
-\vspace{0.3cm}
-A következő lehetőségeket kell ellenőrizni:
+Amikor egy nagy webhez tartozó PageRank vektort szeretnénk közelíteni, fontos tudni, hogy az iteráció úgy fog viselkedni ahogyan várjuk. A következő lehetőségeket kell ellenőrizni:
 
 \begin{enumerate}
 	\item Biztosan konvergálni fog-e a hatványiteráció?
@@ -437,38 +446,6 @@ Ezek az eseten olyan webek esetén fordulnak elő, amelyek valójában több egy
 
 A fenti ábrán látható web linkmátrixának sajátértékei között szerepel a -1 és az 1 is, kétszeres multiplicitással.
 
-\subsection{Webekhez rendelt Markov-láncok}\label{markov_lancok}
-
-Vegyünk egy lógó oldalt nem tartalmazó webet. Legyen adott egy úgynevezett véletlen szörföző, aki minden lépésben egyenletes eloszlás szerint választ a jelenlegi oldalon lévő linkek közül és továbbhalad a választott link által mutatott oldalra. A kezdeti eloszlás szintén legyen egyenletes.
-
-Az ehhez a Markov-lánchoz tartozó átmenetmátrix éppen a linkmátrix lesz. A \ref{linkmatrix} alfejezetben meghatároztuk, hogy a keresett PageRank vektor megoldása az $x = xA$ mátrixegyenletnek. Látszik, hogy ez éppen a Markov-lánc invariáns eloszlása. Ezért mondtuk azt, hogy a sajátvektorok közül azt választjuk, ahol a komponensek összege 1.
-
-Ez logikus, hiszen az invariáns eloszlás mutatja, hogy hosszú távon az idő mekkora részét tölti a véletlen szörföző az állapotokban, tehát azok az oldalak lesznek a legfontosabbak, ahol várhatóan a legtöbb időt töltjük.
-
-\vspace{0.1cm}
-\textbf{Megjegyzés:} Nem minden webhez rendeletünk egy ilyen Markov-láncot. A lógó oldalakat tartalmazó webek linkmátrixában vannak csupa nulla sorok, melyek elrontják a mátrix sztochasztikusságát, de a \ref{link_web_logooldal} alfejezetben megadott helyettesítéssel kapott webek már megfelelőek. 
-\vspace{0.1cm}
-
-\vspace{0.1cm}
-\textbf{Megjegyzés:} Az 1 sajátérték multiplicitása és kapcsolata a webhez rendel Markov-lánccal.
-\vspace{0.1cm}
-
-Itt kimondunk egy tételt, amelynek segítségével meghatározhatjuk az 1 sajátérték multiplicitását a linkmátrix (mint átmenetmátrix) bizonyos tulajdonságaiból. Ez a későbbiekben (\ref{alfa_sajatertek}. fejezet) hasznos lesz. 
-
-\begin{definicio}{Zárt részhalmaz}
-	Egy átmenetmátrix elemeinek egy $L$ részhalmaza zárt, hogyha $i \in L$ és $j \notin L$, akkor az $(i,j)$ átmenetvalószínűség nulla.  
-\end{definicio}
-
-\begin{definicio}{Irreducibilis zárt részhalmaz}
-	Egy átmenetmátrix elemeinek egy $L$ részhalmaza irreducibilis zárt, hogyha zárt és egyetlen valódi részhalmaza sem zárt.
-\end{definicio}
-
-\begin{tetel}
-	{Egy átmenetmátrix esetén az 1 sajátérték multiplicitása megegyezik a mátrixban lévő irreducibilis zárt részhalmazok számával.}
-\end{tetel}
-
-A tétel igazolása a \cite{irreducible_closed}. forrás 126. oldalán található.
-
 \subsection{A konvergencia garantálása}\label{konvergencia_garantalas}
 
 A domináns sajátérték (és ezzel együtt a konvergencia) létezésének garantálásához használjuk fel a Perron–Frobenius tételt.
@@ -481,15 +458,12 @@ A domináns sajátérték (és ezzel együtt a konvergencia) létezésének gara
 A tétel értelmében tehát az egyértelmű PageRank vektor létezéséhez annyit kell tenni, hogy a linkmátrixot úgy módosítjuk, hogy csak pozitív elemei legyenek.
 
 \begin{definicio}{Google mátrix}
-	Legyen $A \in \mathbb{R}^{n \times n}$ egy lógó oldalt nem tartalmazó web linkmátrixa, $S$ pedig egy egy olyan $n \times n$-es mátrix, melynek minden eleme $\frac{1}{n}$. Ekkor a Google mátrix a következőképpen áll elő:
-	
-	\[ G = \alpha A + (1-\alpha) S \]
-	
-	ahol $\alpha \in [0,1]$.
+	Legyen $A \in \mathbb{R}^{n \times n}$ egy lógó oldalt nem tartalmazó web linkmátrixa, $S$ pedig egy egy olyan $n \times n$-es mátrix, melynek minden eleme $\frac{1}{n}$. Ekkor a Google definíció szerint
+	\[ G := \alpha A + (1-\alpha) S \qquad (\alpha \in [0,1]) \]
 \end{definicio}
+\vspace{-1cm}
 
 Látható, hogy a Google mátrix értéke függ az $\alpha$ paramétertől, de majdnem minden esetben (az $\alpha = 1$-et kivéve) a kapott mátrix minden eleme biztosan pozitív, azaz létezik domináns sajátérték és a hatványiteráció indulási helytől függetlenül az ehhez tartozó sajátvektorhoz fog konvergálni.
-\vspace{0.1 cm}
 
 \[
 \begin{bmatrix}
@@ -517,7 +491,7 @@ Látható, hogy a Google mátrix értéke függ az $\alpha$ paramétertől, de m
 \vspace{0.3 cm}
 
 \textbf{Megjegyzés:} A helyettesítés mögötti heurisztika. \newline
-Tekintsük a webhez rendelt Markov-láncot. Ezt úgy módosítjuk, hogy a véletlen szörföző most már nem csak a linkeken keresztül juthat el a következő oldalra, hanem bizonyos valószínűséggel egy egyenletes eloszlás szerint választott véletlen oldalra ugrik. Ebben a modellben már nem lehetnek teljesen különálló oldalhalmazok, a véletlen szörföző bárhonnan eljuthat bárhova.
+Tekintsük a webhez rendelt Markov-láncot. Ezt úgy módosítjuk, hogy a véletlen szörföző most már nem csak a linkeken keresztül juthat el a következő oldalra, hanem $1-\alpha$ valószínűséggel egy egyenletes eloszlás szerint választott véletlen oldalra ugrik. Ebben a modellben már nem lehetnek teljesen különálló oldalhalmazok, a véletlen szörföző bárhonnan eljuthat bárhova.
 
 Az így kapott Markov-lánc átmenetmátrixa éppen a Google mátrix lesz, ahol az $\alpha$ paraméter dönt arról, hogy mekkora valószínűséggel követjük a linkeket és mekkorával ugrunk véletlen oldalra.
 
@@ -552,7 +526,7 @@ Először tehát $A^T$ skalár szorosával szorozzuk a PageRank vektor jelenlegi
 A linkmátrixhoz hasonlóan a Google mátrixhoz is rendelhető egy Markov-lánc, mivel a fejezet elején láttuk, hogy ez is sztochasztikus mátrix. Az ehhez a mátrixhoz tartozó Markov-lánc néhány tulajdonságát a következő tétel mondja ki.
 
 \begin{tetel}
-	{A Google mátrixhoz tartozó Markov-lánc irreducibilis és aperiodikus.}
+	A Google mátrixhoz tartozó Markov-lánc irreducibilis és aperiodikus.
 \end{tetel}
 \vspace{-1cm}
 \begin{proof}
@@ -605,9 +579,9 @@ Minél közelebb van tehát a második legnagyobb sajátérték egyhez (a domin�
 A konvergencia sebessége úgy kapcsolódik az $\alpha$ paraméterhez, hogy $\alpha$ maga is sajátérték (a legtöbb esetben). Ezt az alábbi két tétel igazolja \cite{secondeigenvalue}. 
 
 \vspace{0.1cm}
-\begin{tetel}{Ha a Google mátrix $G = \alpha A + (1-\alpha)S$ ($\alpha \in [0,1)$, $G \in \mathbb{R}^n$) sajátértékei $ 1 > |\ \lambda_2 |\ \geq |\ \lambda_3 |\ \geq ... \geq |\ \lambda_n |\ $, akkor $\lambda_2 \leq \alpha$. }
+\begin{tetel}
+		Ha a Google mátrix $G = \alpha A + (1-\alpha)S$ ($\alpha \in [0,1)$, $G \in \mathbb{R}^n$) sajátértékei $ 1 > |\ \lambda_2 |\ \geq |\ \lambda_3 |\ \geq ... \geq |\ \lambda_n |\ $, akkor $\lambda_2 \leq \alpha$.
 \end{tetel}
-\vspace{-1cm}
 \begin{proof}
 	
 	Először igazoljuk a tételt az $\alpha = 0$ esetre. Ekkor $G = S$, ahol $S = (\frac{1}{n})_{i,j}$ $(i,j = 1,2,...,n)$.
@@ -625,14 +599,9 @@ A konvergencia sebessége úgy kapcsolódik az $\alpha$ paraméterhez, hogy $\al
 	\begin{proof}
 		Tudjuk, hogy egy mátrixhoz és transzponáltjához tartozó sajátvektorok ortogonálisak, ha nem ugyanahhoz a sajátértékhez tartoznak \cite{orthogonal_eigenvectors}. Mivel $x_2$ a $\lambda_2$-höz tartozik $G^T$ mátrixban, ezért ortogonális lesz $G$ legnagyobb sajátértékéhez tartozó sajátvektorra. 
 		
-		Ez a sajátvektor éppen $e$, mivel
-		
-		\[ G e = e \]
-		
+		Ez a sajátvektor éppen $e$, mivel $ G e = e$, amiből
 		\[  ( \alpha A + (1-\alpha) S ) e = e  \]
-		
 		\[  \alpha A e + (1-\alpha) S e = e \]
-		
 		A \ref{egy_sajatertek} fejezetben láttuk, hogy $A e = e$ és az is igaz, hogy $S e = e$, ezért az egyenlőség teljesül, $e$ valóban sajátvektora $G$-nek, és ortogonális $x_2$-re.	
 		\phantom\qedhere
 	\end{proof}
@@ -676,7 +645,8 @@ A konvergencia sebessége úgy kapcsolódik az $\alpha$ paraméterhez, hogy $\al
 
 A bizonyítás során azért nem foglalkoztunk az $\alpha = 1$ esettel, mert ekkor a Google mátrix a linkmátrix lesz, és még a konvergenciát sem tudjuk garantálni.
 
-\begin{tetel}{Ha a Google mátrix $G = \alpha A + (1-\alpha)S$ ($\alpha \in [0,1)$, $G \in \mathbb{R}^n$) sajátértékei $ 1 > |\ \lambda_2 |\ \geq |\ \lambda_3 |\ \geq ... \geq |\ \lambda_n |\ $ és $A$-ban van legalább kettő irreducibilis zárt részhalmaz, akkor $\lambda_2 = \alpha$. }
+\begin{tetel}
+	Ha a Google mátrix $G = \alpha A + (1-\alpha)S$ ($\alpha \in [0,1)$, $G \in \mathbb{R}^n$) sajátértékei $ 1 > |\ \lambda_2 |\ \geq |\ \lambda_3 |\ \geq ... \geq |\ \lambda_n |\ $ és $A$-ban van legalább kettő irreducibilis zárt részhalmaz, akkor $\lambda_2 = \alpha$.
 \end{tetel}
 \begin{proof}
 	Az $\alpha = 0$ esetre a tételt már az előző bizonyítás elején beláttuk.

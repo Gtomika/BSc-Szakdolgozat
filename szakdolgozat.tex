@@ -288,7 +288,7 @@ Tehát a linkmátrix sorai kifejezik azt, hogy egy oldal mennyi és melyik mási
 
 Vegyünk egy lógó oldalt nem tartalmazó webet. Legyen adott egy úgynevezett véletlen szörföző, aki minden lépésben egyenletes eloszlás szerint választ a jelenlegi oldalon lévő linkek közül és továbbhalad a választott link által mutatott oldalra. A kezdeti eloszlás szintén legyen egyenletes.
 
-Az ehhez a Markov-lánchoz tartozó átmenetmátrix éppen a linkmátrix lesz. A \ref{linkmatrix} alfejezetben meghatároztuk, hogy a keresett PageRank vektor megoldása az $\bar{x} = \bar{x}A$ mátrixegyenletnek. Látszik, hogy ez éppen a Markov-lánc invariáns eloszlása.
+Az ehhez a Markov-lánchoz tartozó átmenetmátrix éppen a linkmátrix lesz. A következő fejezetben igazoljuk, hogy a keresett PageRank vektor megoldása az $x = xA$ mátrixegyenletnek. Látszik, hogy ez éppen a Markov-lánc invariáns eloszlása.
 
 Ez logikus, hiszen az invariáns eloszlás mutatja, hogy hosszú távon az idő mekkora részét tölti a véletlen szörföző az állapotokban, tehát azok az oldalak lesznek a legfontosabbak, ahol várhatóan a legtöbb időt töltjük.
 
@@ -319,10 +319,10 @@ A bizonyítás az \cite{irreducible_closed}. forrásban található.
 
 Kapcsolat van az oldalak PageRankjának definíciójából kapott egyenletrendszer és a linkmátrix között. Ennek segítségével a PageRank definíciójából kapott egyenletrendszer felírható a következő mátrixegyenletként:
 
-\[ \bar{x} = \bar{x} A, \]
-ahol $\bar{x}$ az oldalak rangjait tartalmazó sorvektor. Ezt átalakítva a következőt kapjuk:
+\[ x = x A, \]
+ahol $x$ az oldalak rangjait tartalmazó sorvektor. Ezt átalakítva a következőt kapjuk:
 
-\[ \bar{x}^T = A^T \bar{x}^T \]
+\[ x^T = A^T x^T \]
 
 Ebből mátrixegyenletből látszik, hogy a keresett vektor az $A^T$ mátrix 1 sajátértékéhez tartozó sajátvektor. Mivel egy sajátvektor bármilyen nem nulla skalár szorosa is sajátvektor ezért az egyértelműség kedvéért tegyük fel, hogy az általunk keresett vektor az, ahol a komponensek összege 1. Ez azért hasznos, mert az előző fejezetben kiderült, hogy a PageRank egy invariáns eloszlás is, ahol a komponensek összege éppen 1.
 
@@ -339,15 +339,15 @@ Felmerül a kérdés, hogy minden $A^T$ mátrixnak sajátértéke-e az 1. Ehhez 
 \begin{proof}
 	Legyen A egy tetszőleges, lógó oldalt nem tartalmazó, n oldalból álló web linkmátrixa. Ekkor az i. sorhoz $(i = 1,2,...,n)$ tartozó sorösszeg $ |v_i| \times \frac{1}{|v_i|} = 1 $, azaz minden ilyen mátrix sztochasztikus.
 	
-	Legyen $\bar{e}$ az az n komponensű oszlopvektor, melynek minden komponense 1. Ekkor az
-	\[ A \bar{e} = \bar{e} \] 
+	Legyen $e$ az az n komponensű oszlopvektor, melynek minden komponense 1. Ekkor az
+	\[ A e = e \] 
 	egyenlet teljesül, mert az eredményvektor i. komponense $(i = 1,2,...,n)$
 	\[ \sum_{j=1}^{n}{1 a_{i,j} } = 1, \] 
-	a mátrix sztochasztikus tulajdonsága miatt. Tehát bármely linkmátrixnak az $\bar{e}$ vektor sajátvektora, 1 sajátértékkel.
+	a mátrix sztochasztikus tulajdonsága miatt. Tehát bármely linkmátrixnak az $e$ vektor sajátvektora, 1 sajátértékkel.
 \end{proof}
 \vspace{0.5cm}
 
-Ugyan bármely mátrixnak és transzponáltjának sajátértékei megegyeznek, de az nem igaz, hogy ezen sajátértékekhez tartozó sajátvektorok is azonosak, ezért a fenti tételben bevezetett $\bar{e}$ vektor nem biztos, hogy megoldása lesz a PageRank definíciója által meghatározott egyenletrendszernek. Ezzel a megoldás egyébként is használhatatlan az oldalak rangsorolásában, mivel minden oldalnak azonos rangot ad.
+Ugyan bármely mátrixnak és transzponáltjának sajátértékei megegyeznek, de az nem igaz, hogy ezen sajátértékekhez tartozó sajátvektorok is azonosak, ezért a fenti tételben bevezetett $e$ vektor nem biztos, hogy megoldása lesz a PageRank definíciója által meghatározott egyenletrendszernek. Ezzel a megoldás egyébként is használhatatlan az oldalak rangsorolásában, mivel minden oldalnak azonos rangot ad.
 
 A lógó oldalakat tartalmazó webek esetén az 1 nem lesz mindig sajátértéke az $A^T$ mátrixnak (vannak 0 összegű sorok, amik a fenti bizonyítást elrontják), azonban figyeljük meg, hogy ha elvégezzük a \ref{link_web_logooldal} alfejezetben megadott helyettesítést akkor a kapott mátrix már sztochasztikus lesz, és erre már érvényes az előbbi tétel.
 
@@ -378,8 +378,8 @@ Beláttuk, hogy az egy minden esetben sajátérték, és azt is hogy ennél (abs
 \subsection{A hatványiteráció}
 
 Ha sok oldalból álló webek esetén akarjuk meghatározni a rangokat, akkor a pontos megoldást adó módszerek nagyon lassúak, ezért közelítő, iteratív módszerre van szükség. Ideális választás a hatványiteráció alkalmazása az $A^T$ mátrixra, mert ebben az esetben elég tárolni mindössze a linkmátrix transzponáltját, és a PageRank vektor éppen aktuális iterációját a számoláshoz. A hatványiteráció általános alakja
-\[ \bar{x}^{i+1} = M \bar{x}^i, \]
-ahol $M \in \mathbb{R}^{n \times n}$ és $\bar{x}^0 \in \mathbb{R}^n$.
+\[ x^{i+1} = M x^i, \]
+ahol $M \in \mathbb{R}^{n \times n}$ és $x^0 \in \mathbb{R}^n$.
 \vspace{0.2cm}
 
 A hatványiteráció azonban a domináns sajátértékhez tartozó sajátvektorhoz konvergál. Ha ilyen nincsen, akkor nem tudjuk garantálni a konvergenciát. Ahhoz, hogy alkalmazhassuk az egyhez tartozó sajátvektor megtalálására, vagy be kell látni, hogy az 1 mindig domináns sajátérték, vagy úgy kell módosítani a linkmátrixon, hogy az legyen.
@@ -522,10 +522,10 @@ A \ref{linkmatrix} alfejezetben említettük, hogy a linkmátrix általában egy
 
 A Google mátrix sűrűségéből adódó számítási problémát ki lehet küszöbölni. Ha hatványiteráció $i$.-ik lépése
 
-\[ \bar{x}^{i+1} = G^T \bar{x}^i, \]
-ahol $\bar{x}$ a PageRank oszlopvektor, akkor ez ekvivalens a következő alakkal:
+\[ x^{i+1} = G^T x^i, \]
+ahol $x$ a PageRank oszlopvektor, akkor ez ekvivalens a következő alakkal:
 
-\[ \bar{x}^{i+1} = \alpha A^T \bar{x}^i + (1-\alpha) S^T. \] 
+\[ x^{i+1} = \alpha A^T x^i + (1-\alpha) S^T. \] 
 
 Először tehát $A^T$ skalár szorosával szorozzuk a PageRank vektor jelenlegi iterációját, majd ezután adjuk hozzá a csupa $\frac{1-\alpha}{n}$ elemekből álló mátrixot. Ekkor az elvégzett mátrixszorzásban már nem szerepel a sűrű Google mátrix, de az iteráció eredménye ugyanaz, mintha azzal szoroztunk volna. 
 
@@ -718,7 +718,98 @@ Legyen adott egy tetszőleges, $n$ oldalból álló web.
 
 \subsection{Példa}
 
-Végrehajtjuk az előző alfejezetben leírt algoritmust egy konkrét webre.
+Végrehajtjuk az előző alfejezetben leírt algoritmust egy konkrét webre, ez legyen a lenti ábrán látható irányított gráf.
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}[
+	roundnode/.style={circle, draw=green!60, fill=green!5, very thick, minimum size=7mm},
+	]
+	\centering
+	%Nodes
+	\node[roundnode]      (c1)                     {1};
+	\node[roundnode]      (c2)       [right=of c1] {2};
+	\node[roundnode]      (c3)       [below=of c2] {3};
+	\node[roundnode]      (c4)       [below=of c1] {4};
+	\node[roundnode]      (c5)       [left=of c4] {5};
+	
+	%Lines
+	\draw[->,thick] (c2) -- (c3);
+	\draw[->,thick] (c3) -- (c2);
+	\draw[->,thick] (c3) -- (c4);
+	\draw[->,thick] (c4) -- (c1);
+	\draw[->,thick] (c4) -- (c2);
+	\draw[->,thick] (c4) -- (c5);
+	\draw[->,thick] (c5) -- (c4);
+	\end{tikzpicture}
+\end{figure}
+
+\begin{enumerate}[label=(\Roman*)]
+\item A gráfról leolvasható linkmátrix a következő lesz:
+\vspace{-1cm}
+\begin{center}
+	\[
+	\begin{bmatrix}
+	0 & 0 & 0 & 0 & 0 \\
+	0 & 0 & 1 & 0 & 0 \\
+	0 & \frac{1}{2} & 0 & \frac{1}{2} & 0 \\
+	\frac{1}{3} & \frac{1}{3} & 0 & 0 & \frac{1}{3} \\
+	0 & 0 & 0 & 1 & 0 \\
+	\end{bmatrix}
+	\]
+\end{center}
+
+\item Látható, hogy az első oldal egy lógó oldal, ugyanis nincs belőle kimenő link, ezért a linkmátrixban helyettesítést kell alkalmaznunk az első sorban. A módosított linkmátrix ezért:
+\vspace{-1cm}
+\begin{center}
+	\[
+	\begin{bmatrix}
+	\frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} \\
+	0 & 0 & 1 & 0 & 0 \\
+	0 & \frac{1}{2} & 0 & \frac{1}{2} & 0 \\
+	\frac{1}{3} & \frac{1}{3} & 0 & 0 & \frac{1}{3} \\
+	0 & 0 & 0 & 1 & 0 \\
+	\end{bmatrix}
+	\]
+\end{center}
+
+\item Válasszuk az $\alpha = 0,85$ értéket, a konvergencia sebessége és a linkek szerkezete közötti kompromisszumként. A Google mátrixot a 
+\vspace{-1cm}
+\begin{center}
+	\[0,85
+	\begin{bmatrix}
+	\frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} \\
+	0 & 0 & 1 & 0 & 0 \\
+	0 & \frac{1}{2} & 0 & \frac{1}{2} & 0 \\
+	\frac{1}{3} & \frac{1}{3} & 0 & 0 & \frac{1}{3} \\
+	0 & 0 & 0 & 1 & 0 \\
+	\end{bmatrix}
+	+ 0,15 
+	\begin{bmatrix}
+	\frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} \\
+	\frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} \\
+	\frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} \\
+	\frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} \\
+	\frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} \\
+	\end{bmatrix}
+	\]
+\end{center}
+egyenletből kapjuk:
+\vspace{-1cm}
+\begin{center}
+	\[G =
+	\begin{bmatrix}
+	0,2 & 0,2 & 0,2 & 0,2 & 0,2 \\
+	0,03 & 0,03 & 0,88 & 0,03 & 0,03 \\
+	0,03 & 0,455 & 0,03 & 0,455 & 0,03 \\
+	0,313 & 0,313 & 0,03 & 0,03 & 0,313 \\
+	0,03 & 0,03 & 0,03 & 0,88 & 0,03 \\
+	\end{bmatrix}
+	\]
+\end{center} 
+
+\item
+\item 
+\end{enumerate}
 
 %hivatkozások ---------------------------------------------------------
 \bibliography{hivatkozasok}

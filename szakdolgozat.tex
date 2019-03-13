@@ -270,12 +270,12 @@ Tehát a linkmátrix sorai kifejezik azt, hogy egy oldal mennyi és melyik mási
 \begin{minipage}{0.5\textwidth}
 	\begin{center}
 		\[
-		\begin{bmatrix}
+		\begin{pmatrix}
 		0 & 0 & \frac{1}{2} & \frac{1}{2} \\  
 		\frac{1}{2} & 0 & \frac{1}{2} & 0 \\
 		1 & 0 & 0 & 0 \\
 		0 & 1 & 0 & 0 \\
-		\end{bmatrix}
+		\end{pmatrix}
 		\]
 	\end{center}
 \end{minipage}
@@ -426,13 +426,13 @@ Ezek az eseten olyan webek esetén fordulnak elő, amelyek valójában több egy
 \begin{minipage}{0.5\textwidth}
 	\begin{center}
 		\[
-		\begin{bmatrix}
+		\begin{pmatrix}
 		0 & 0 & 0 & 1 & 0 \\
 		0 & 0 & \frac{1}{2} & 0 & \frac{1}{2} \\
 		0 & 0 & 0 & 0 & 1 \\
 		1 & 0 & 0 & 0 & 0 \\
 		0 & 1 & 0 & 0 & 0 \\
-		\end{bmatrix}
+		\end{pmatrix}
 		\]
 	\end{center}
 \end{minipage}
@@ -463,24 +463,24 @@ A tétel értelmében tehát az egyértelmű PageRank vektor létezéséhez anny
 Látható, hogy a Google mátrix értéke függ az $\alpha$ paramétertől, de majdnem minden esetben (az $\alpha = 1$-et kivéve) a kapott mátrix minden eleme biztosan pozitív, azaz létezik domináns sajátérték és a hatványiteráció indulási helytől függetlenül az ehhez tartozó sajátvektorhoz fog konvergálni.
 
 \[
-\begin{bmatrix}
+\begin{pmatrix}
 0 & \frac{1}{2} & \frac{1}{2} & 0 \\
 \frac{1}{3} & 0 & \frac{1}{3} & \frac{1}{3} \\
 \frac{1}{3} & \frac{1}{3} & 0 & \frac{1}{3} \\
 0 & 0 & 1 & 0 \\
-\end{bmatrix}, \quad
-\begin{bmatrix}
+\end{pmatrix}, \quad
+\begin{pmatrix}
 \frac{1}{4} & \frac{1}{4} & \frac{1}{4} & \frac{1}{4} \\
 \frac{1}{4} & \frac{1}{4} & \frac{1}{4} & \frac{1}{4} \\
 \frac{1}{4} & \frac{1}{4} & \frac{1}{4} & \frac{1}{4} \\
 \frac{1}{4} & \frac{1}{4} & \frac{1}{4} & \frac{1}{4} \\
-\end{bmatrix}, \quad
-\begin{bmatrix}
+\end{pmatrix}, \quad
+\begin{pmatrix}
 0,038 & 0,463 & 0,463 & 0,038 \\
 0,321 & 0,038 & 0,321 & 0,321 \\
 0,321 & 0,321 & 0,38 & 0,321 \\
 0,038 & 0,038 & 0,888 & 0,038 \\
-\end{bmatrix}
+\end{pmatrix}
 \]
 
 \vspace{0.1 cm}
@@ -706,7 +706,7 @@ Legyen adott egy tetszőleges, $n$ oldalból álló web.
 	\[G = \alpha A + (1-\alpha)S,\]
 	ahol $S$ egy csupa $1/n$ elemekből álló $n \times n$-es mátrix. 
 	
-	\item Végezzük a hatványiterációt a $G^T$ mátrixon, amíg a két iterációs lépés közötti különbség nem csökken valami kicsi $\epsilon$ érték alá. 
+	\item Végezzük a hatványiterációt a $G^T$ mátrixon, amíg a két iterációs lépés közötti különbség nem csökken valami kicsi $\epsilon$ érték alá, vagy adjunk meg konkrét iterációs lépésszámot. Az $x_0$ kiindulási pont legyen a csupa $1/n$ komponensekből álló vektor.
 	
 	\textbf{Megjegyzés:} Az iterációt ne közvetlenül a sűrű $G^T$ mátrixon, hanem az \ref{google_matrix_tul} alfejezetben említett
 	\[ x^{i+1} = \alpha A^T x^i + (1-\alpha) S^T \] 
@@ -748,13 +748,13 @@ Végrehajtjuk az előző alfejezetben leírt algoritmust egy konkrét webre, ez 
 \vspace{-1cm}
 \begin{center}
 	\[
-	\begin{bmatrix}
+	\begin{pmatrix}
 	0 & 0 & 0 & 0 & 0 \\
 	0 & 0 & 1 & 0 & 0 \\
 	0 & \frac{1}{2} & 0 & \frac{1}{2} & 0 \\
 	\frac{1}{3} & \frac{1}{3} & 0 & 0 & \frac{1}{3} \\
 	0 & 0 & 0 & 1 & 0 \\
-	\end{bmatrix}
+	\end{pmatrix}
 	\]
 \end{center}
 
@@ -762,13 +762,13 @@ Végrehajtjuk az előző alfejezetben leírt algoritmust egy konkrét webre, ez 
 \vspace{-1cm}
 \begin{center}
 	\[
-	\begin{bmatrix}
+	\begin{pmatrix}
 	\frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} \\
 	0 & 0 & 1 & 0 & 0 \\
 	0 & \frac{1}{2} & 0 & \frac{1}{2} & 0 \\
 	\frac{1}{3} & \frac{1}{3} & 0 & 0 & \frac{1}{3} \\
 	0 & 0 & 0 & 1 & 0 \\
-	\end{bmatrix}
+	\end{pmatrix}
 	\]
 \end{center}
 
@@ -776,40 +776,65 @@ Végrehajtjuk az előző alfejezetben leírt algoritmust egy konkrét webre, ez 
 \vspace{-1cm}
 \begin{center}
 	\[0,85
-	\begin{bmatrix}
+	\begin{pmatrix}
 	\frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} \\
 	0 & 0 & 1 & 0 & 0 \\
 	0 & \frac{1}{2} & 0 & \frac{1}{2} & 0 \\
 	\frac{1}{3} & \frac{1}{3} & 0 & 0 & \frac{1}{3} \\
 	0 & 0 & 0 & 1 & 0 \\
-	\end{bmatrix}
+	\end{pmatrix}
 	+ 0,15 
-	\begin{bmatrix}
+	\begin{pmatrix}
 	\frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} \\
 	\frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} \\
 	\frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} \\
 	\frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} \\
 	\frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} & \frac{1}{5} \\
-	\end{bmatrix}
+	\end{pmatrix}
 	\]
 \end{center}
 egyenletből kapjuk:
 \vspace{-1cm}
 \begin{center}
 	\[G =
-	\begin{bmatrix}
+	\begin{pmatrix}
 	0,2 & 0,2 & 0,2 & 0,2 & 0,2 \\
 	0,03 & 0,03 & 0,88 & 0,03 & 0,03 \\
 	0,03 & 0,455 & 0,03 & 0,455 & 0,03 \\
 	0,313 & 0,313 & 0,03 & 0,03 & 0,313 \\
 	0,03 & 0,03 & 0,03 & 0,88 & 0,03 \\
-	\end{bmatrix}
+	\end{pmatrix}
 	\]
 \end{center} 
 
-\item
-\item 
+\item Végezzük el a hatványiteráció első 5 lépését $G^T$ mátrixra. A kapott eredményvektorok sorvektor formában:
+\vspace{-1cm}
+\begin{center}
+	\[ x_0 = \begin{pmatrix} 0,2 & 0,2 & 0,2 & 0,2 & 0,2 \\ \end{pmatrix} \]
+	\[ x_1 = \begin{pmatrix} 0,121 & 0,206 & 0,234 & 0,319 & 0,121 \\ \end{pmatrix} \]
+	\[ x_2 = \begin{pmatrix} 0,141 & 0,24 & 0,225 & 0,253 & 0,141 \\ \end{pmatrix} \]
+	\[ x_3 = \begin{pmatrix} 0,126 & 0,221 & 0,258 & 0,269 & 0,126 \\ \end{pmatrix} \]
+	\[ x_4 = \begin{pmatrix} 0,128 & 0,237 & 0,239 & 0,268 & 0,128 \\ \end{pmatrix} \]
+	\[ x_5 = \begin{pmatrix} 0,128 & 0,229 & 0,253 & 0,262 & 0,128 \\ \end{pmatrix} \]
+\end{center}
+Ilyen kis méretű mátrix esetén nem jelent nehézséget a valódi sajátérték vektor meghatározása. A PageRank vektor ebben az esetben
+\[\begin{pmatrix} 0,128 & 0,235 & 0,252 & 0,268 & 0,128 \\ \end{pmatrix},\]
+ami jól láthatóan közel van az iteráció eredményéhez, már az ötödik lépés után.
+
+\item Rendezzük sorba és rendeljük hozzá az oldalakhoz a kapott fontossági pontszámokat. Az eredmény leolvasható a táblázatból.
+\vspace{-1cm}
+\begin{center}
+	\begin{tabular}{c | c}
+		4. oldal & 0,268 \\
+		\hline
+		3. oldal & 0,252 \\
+		2. oldal & 0,235 \\
+		5. oldal & 0,128 \\
+		1. oldal & 0,128 \\
+	\end{tabular}
+\end{center}
 \end{enumerate}
+A legfontosabb oldal tehát a negyedik. A rangsorolást nehezíti, hogy a első és az ötödik oldal pontszáma annyira közel van egymáshoz, hogy 3 tizedesjegy pontossággal nem is lehet őket megkülönböztetni.
 
 %hivatkozások ---------------------------------------------------------
 \bibliography{hivatkozasok}

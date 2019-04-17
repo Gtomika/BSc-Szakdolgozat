@@ -3,8 +3,9 @@
 \usepackage{t1enc}
 \usepackage[utf8]{inputenc}
 \usepackage[magyar]{babel}
-\usepackage{makeidx}
-\usepackage{natbib}
+% KP kihuztam a makeidx es natbib csomagot, nalam hibat jelzett
+%\usepackage{makeidx} 
+%\usepackage{natbib}
 \usepackage{enumitem}
 \usepackage[version=4]{mhchem}
 \usepackage{graphicx}
@@ -27,7 +28,17 @@
 \newcounter{definicioszam}
 \newenvironment{definicio}[1]
 {{\medskip}\noindent \stepcounter{definicioszam}
-{\bfseries{\thedefinicioszam. Definíció: #1\\[1ex]}}}{\bigskip }
+%{\bfseries{\thedefinicioszam. Definíció: #1\\[1ex]}}}{\bigskip }
+{\bfseries{\thedefinicioszam. Definíció: \textit{#1.}}}}{\bigskip }
+% szerintem igy jobb a definicio kornyezet KP
+
+
+
+% a vektorokat jelolheted felkoverrel, hogy megkonnyitsd a megertest: KP
+\newcommand{\bx}{\mathbf{x}}
+
+
+
 
 \newtheorem{tetel}{Tétel}
 \newtheorem{lemma}{Lemma}
@@ -303,7 +314,7 @@ Ez logikus, hiszen az invariáns eloszlás mutatja, hogy hosszú távon az idő 
 Itt kimondunk egy tételt, amelynek segítségével meghatározhatjuk az 1 sajátérték multiplicitását a linkmátrix (mint átmenetmátrix) bizonyos tulajdonságaiból. Ez a későbbiekben (\ref{alfa_sajatertek}. fejezet) hasznos lesz. 
 
 \begin{definicio}{Zárt részhalmaz}
-	Egy átmenetmátrix elemeinek egy $L$ részhalmaza zárt, hogyha $i \in L$ és $j \notin L$, akkor az $(i,j)$ átmenetvalószínűség nulla.  
+	Egy átmenetmátrix elemeinek $L$ kommunikációs osztálya zárt, ha minden $i \in L$ és $j$ állapotok esetén, ha $i$-ből el lehet jutni $j$-be, akkor $j \in L$.  
 \end{definicio}
 
 \begin{definicio}{Irreducibilis zárt részhalmaz}
@@ -318,13 +329,20 @@ A bizonyítás az \cite{irreducible_closed}. forrásban található.
 \section{A sajátértékprobléma}
 
 Kapcsolat van az oldalak PageRankjának definíciójából kapott egyenletrendszer és a linkmátrix között. Ennek segítségével a PageRank definíciójából kapott egyenletrendszer felírható a következő mátrixegyenletként:
-
-\[ x = x A, \]
-ahol $x$ az oldalak rangjait tartalmazó sorvektor. Ezt átalakítva a következőt kapjuk:
-
-\[ x^T = A^T x^T \]
-
-Ebből mátrixegyenletből látszik, hogy a keresett vektor az $A^T$ mátrix 1 sajátértékéhez tartozó sajátvektor. Mivel egy sajátvektor bármilyen nem nulla skalár szorosa is sajátvektor ezért az egyértelműség kedvéért tegyük fel, hogy az általunk keresett vektor az, ahol a komponensek összege 1. Ez azért hasznos, mert az előző fejezetben kiderült, hogy a PageRank egy invariáns eloszlás is, ahol a komponensek összege éppen 1.
+\[ 
+\bx = \bx A, 
+\]
+%%% KP
+ahol $\bx$ az oldalak rangjait tartalmazó sorvektor. Ezt átalakítva a következőt kapjuk:
+\[
+\bx^T = A^T \bx^T. 
+\]
+%%% KP
+Ebből mátrixegyenletből látszik, hogy a keresett vektor az $A^T$ mátrix 1 sajátértékéhez 
+tartozó sajátvektor. Mivel egy sajátvektor bármilyen nem nulla skalár szorosa is 
+sajátvektor ezért az egyértelműség kedvéért tegyük fel, hogy az általunk keresett vektor 
+az, ahol a komponensek összege 1. Ez azért hasznos, mert az előző fejezetben kiderült, 
+hogy a PageRank egy invariáns eloszlás is, ahol a komponensek összege éppen 1.
 
 \vspace{0.1cm}
 \textbf{Megjegyzés:} Ha webnek az internet egy sok oldalból álló részhalmazát választjuk (márpedig a PageRankokat ilyen esetre akarjuk kiszámolni), akkor a linkmátrix nagyon ritka lesz, azaz szinte az összes eleme 0. Ennek oka, hogy az egy oldal által linkelt további oldalak száma elenyésző az összes oldal számához képest. A linkmátrix ritkasága egy számolási szempontból nagyon kedvező tulajdonság. 
@@ -476,10 +494,10 @@ Látható, hogy a Google mátrix értéke függ az $\alpha$ paramétertől, de m
 \frac{1}{4} & \frac{1}{4} & \frac{1}{4} & \frac{1}{4} \\
 \end{pmatrix}, \quad
 \begin{pmatrix}
-0,038 & 0,463 & 0,463 & 0,038 \\
-0,321 & 0,038 & 0,321 & 0,321 \\
-0,321 & 0,321 & 0,38 & 0,321 \\
-0,038 & 0,038 & 0,888 & 0,038 \\
+0,\!038 & 0,\!463 & 0,\!463 & 0,\!038 \\
+0,\!321 & 0,\!038 & 0,\!321 & 0,\!321 \\
+0,\!321 & 0,\!321 & 0,\!38 & 0,\!321 \\
+0,\!038 & 0,\!038 & 0,\!888 & 0,\!038 \\
 \end{pmatrix}
 \]
 
@@ -798,31 +816,34 @@ egyenletből kapjuk:
 \begin{center}
 	\[G =
 	\begin{pmatrix}
-	0,2 & 0,2 & 0,2 & 0,2 & 0,2 \\
-	0,03 & 0,03 & 0,88 & 0,03 & 0,03 \\
-	0,03 & 0,455 & 0,03 & 0,455 & 0,03 \\
-	0,313 & 0,313 & 0,03 & 0,03 & 0,313 \\
-	0,03 & 0,03 & 0,03 & 0,88 & 0,03 \\
+	0,\!2 & 0,\!2 & 0,\!2 & 0,\!2 & 0,\!2 \\
+	0,\!03 & 0,\!03 & 0,\!88 & 0,\!03 & 0,\!03 \\
+	0,\!03 & 0,\!455 & 0,\!03 & 0,\!455 & 0,\!03 \\
+	0,\!313 & 0,\!313 & 0,\!03 & 0,\!03 & 0,\!313 \\
+	0,\!03 & 0,\!03 & 0,\!03 & 0,\!88 & 0,\!03 \\
 	\end{pmatrix}
 	\]
 \end{center} 
 
 \item Végezzük el a hatványiteráció első 5 lépését $G^T$ mátrixra. A kapott eredményvektorok sorvektor formában:
-\vspace{-1cm}
-\begin{center}
-	\[ x_0 = \begin{pmatrix} 0,2 & 0,2 & 0,2 & 0,2 & 0,2 \\ \end{pmatrix} \]
-	\[ x_1 = \begin{pmatrix} 0,121 & 0,206 & 0,234 & 0,319 & 0,121 \\ \end{pmatrix} \]
-	\[ x_2 = \begin{pmatrix} 0,141 & 0,24 & 0,225 & 0,253 & 0,141 \\ \end{pmatrix} \]
-	\[ x_3 = \begin{pmatrix} 0,126 & 0,221 & 0,258 & 0,269 & 0,126 \\ \end{pmatrix} \]
-	\[ x_4 = \begin{pmatrix} 0,128 & 0,237 & 0,239 & 0,268 & 0,128 \\ \end{pmatrix} \]
-	\[ x_5 = \begin{pmatrix} 0,128 & 0,229 & 0,253 & 0,262 & 0,128 \\ \end{pmatrix} \]
-\end{center}
-Ilyen kis méretű mátrix esetén nem jelent nehézséget a valódi sajátérték vektor meghatározása. A PageRank vektor ebben az esetben
+% KP a tizedesvesszo tul nagy helyet hagy, ezert kell a \! (kis negativ koz)
+% eleg szoszmotolos
+\[
+\begin{split}
+x_0 & = ( 0,\!2, \ \,0,\!2, \! \ \, 0,\!2 ,\ \, 0,\!2 ,\ \, 0,\!2   ) \\
+x_1 & = (  0,\!121 ,\ \, 0,\!206 ,\ \, 0,\!234 ,\ \ 0,\!319 ,\ \, 0,\!121 )\\   
+x_2 & = (  0,\!141 ,\ \, 0,\!24,\ \ 0,\!225 ,\ \, 0,\!253 ,\ \, 0,\!141 )\\   
+x_3 & = (  0,\!126 ,\ \, 0,\!221 ,\ \, 0,\!258 ,\ \, 0,\!269 ,\ \, 0,\!126) \\  
+x_4 & = (  0,\!128 ,\ \, 0,\!237 ,\ \, 0,\!239 ,\ \, 0,\!268 ,\ \, 0,\!128 )\\  
+x_5 & = (  0,\!128 ,\ \, 0,\!229 ,\ \, 0,\!253 ,\ \, 0,\!262 ,\ \, 0,\!128 ). 
+\end{split}
+\]
+Ilyen kis méretű mátrix esetén nem jelent nehézséget a valódi sajátérték vektor 
+meghatározása. A PageRank vektor ebben az esetben
 \[\begin{pmatrix} 0,128 & 0,235 & 0,252 & 0,268 & 0,128 \\ \end{pmatrix},\]
 ami jól láthatóan közel van az iteráció eredményéhez, már az ötödik lépés után.
 
 \item Rendezzük sorba és rendeljük hozzá az oldalakhoz a kapott fontossági pontszámokat. Az eredmény leolvasható a táblázatból.
-\vspace{-1cm}
 \begin{center}
 	\begin{tabular}{c | c}
 		4. oldal & 0,268 \\

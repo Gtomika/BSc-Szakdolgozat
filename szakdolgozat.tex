@@ -3,9 +3,6 @@
 \usepackage{t1enc}
 \usepackage[utf8]{inputenc}
 \usepackage[magyar]{babel}
-% KP kihuztam a makeidx es natbib csomagot, nalam hibat jelzett
-%\usepackage{makeidx} 
-%\usepackage{natbib}
 \usepackage{enumitem}
 \usepackage[version=4]{mhchem}
 \usepackage{graphicx}
@@ -16,6 +13,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
+\usepackage{bm}
 
 \usepackage{tikz}
 \usetikzlibrary{positioning}
@@ -686,8 +684,8 @@ A tétel feltétele, vagyis az, hogy a linkmátrixban van legalább kettő irred
 Láttuk tehát, hogy $\alpha$ a vizsgált mátrix második legnagyobb sajátértéke, ezért az \ref{konvergencia_sebesseg} alfejezet értelmében a hatványiteráció konvergenciájának sebessége függ $\alpha$-tól. Ezt a sebességet a következő tétel adja meg pontosan \cite{convergence_speed}:
 
 \begin{tetel}
-	Legyen $\mathbf{\pi}$ a PageRank vektor, $\bx^i$ pedig a Google mátrixra alkalmazott hatványiteráció $i$. lépésének erdeménye. Ekkor $\exists C \in \mathbb{R}$:
-	\[ \Vert \bx^i - \mathbf{\pi} \Vert \leq C \alpha^i, \quad i = 1,2,\ldots \]
+	Legyen $\bm{\pi}$ a PageRank vektor, $\bx^i$ pedig a Google mátrixra alkalmazott hatványiteráció $i$. lépésének erdeménye. Ekkor $\exists C \in \mathbb{R}$:
+	\[ \Vert \bx^i - \bm{\pi} \Vert \leq C \alpha^i, \quad i = 1,2,\ldots \]
 \end{tetel}
 
 \textbf{Megjegyzés:} Ha a második tétel feltétele nem is teljesül, az első tétel akkor is érvényes. Ez azt jelenti, hogy nem ismerjük ugyan pontosan a második legnagyobb sajátértéket (és ezzel együtt a konvergencia sebességét), de felülről tudjuk becsülni $\alpha$-val.
@@ -719,7 +717,7 @@ Legyen adott egy tetszőleges, $n$ oldalból álló web.
 	\item Végezzük a hatványiterációt a $G^T$ mátrixon, amíg a két iterációs lépés közötti különbség nem csökken valami kicsi $\epsilon$ érték alá, vagy adjunk meg konkrét iterációs lépésszámot. Az $x_0$ kiindulási pont legyen a csupa $1/n$ komponensekből álló vektor.
 	
 	\textbf{Megjegyzés:} Az iterációt ne közvetlenül a sűrű $G^T$ mátrixon, hanem az \ref{google_matrix_tul} alfejezetben említett
-	\[ x^{i+1} = \alpha A^T x^i + (1-\alpha) S^T \] 
+	\[ \bx^{i+1} = \alpha A^T \bx^i + \frac{(1-\alpha)}{n} \bx^i. \] 
 	felbontás szerint végezzük, mert így csak a ritka linkmátrixal kell szorozni.
 	
 	\item Az iteráció eredménye a PageRank vektor közelítése, ahol az $i.$ komponens az $i.$ oldal fontosságát adja meg. Rendezzük a komponenseket csökkenő sorrendbe, így kapjuk az oldalak fontossági rangsorát.
@@ -818,8 +816,6 @@ egyenletből kapjuk:
 \end{center} 
 
 \item Végezzük el a hatványiteráció első 5 lépését $G^T$ mátrixra. A kapott eredményvektorok sorvektor formában:
-% KP a tizedesvesszo tul nagy helyet hagy, ezert kell a \! (kis negativ koz)
-% eleg szoszmotolos
 \[
 \begin{split}
 x_0 & = ( 0,\!2, \ \,0,\!2, \! \ \, 0,\!2 ,\ \, 0,\!2 ,\ \, 0,\!2   ) \\
@@ -830,7 +826,7 @@ x_4 & = (  0,\!128 ,\ \, 0,\!237 ,\ \, 0,\!239 ,\ \, 0,\!268 ,\ \, 0,\!128 )\\
 x_5 & = (  0,\!128 ,\ \, 0,\!229 ,\ \, 0,\!253 ,\ \, 0,\!262 ,\ \, 0,\!128 ). 
 \end{split}
 \]
-Ilyen kis méretű mátrix esetén nem jelent nehézséget a valódi sajátérték vektor 
+Ilyen kis méretű mátrix esetén nem jelent nehézséget a valódi sajátvektor 
 meghatározása. A PageRank vektor ebben az esetben
 \[\begin{pmatrix} 0,128 & 0,235 & 0,252 & 0,268 & 0,128 \\ \end{pmatrix},\]
 ami jól láthatóan közel van az iteráció eredményéhez, már az ötödik lépés után.

@@ -308,7 +308,7 @@ Ez logikus, hiszen az invariáns eloszlás mutatja, hogy hosszú távon az idő 
 \textbf{Megjegyzés:} Nem minden webhez rendeletünk egy ilyen Markov-láncot. A lógó oldalakat tartalmazó webek linkmátrixában vannak csupa nulla sorok, melyek elrontják a mátrix sztochasztikusságát, de a \ref{link_web_logooldal} alfejezetben megadott helyettesítéssel kapott webek már megfelelőek. 
 \vspace{0.1cm}
 
-A linkmátrix 1 sajátértékének multiplicitása és a webhez rendelt Markov-lánc között kapcsolat van. Itt kimondunk egy tételt, amelynek segítségével meghatározhatjuk az 1 sajátérték multiplicitását a linkmátrix (mint átmenetmátrix) bizonyos tulajdonságaiból. Ez a későbbiekben (\ref{alfa_sajatertek}. fejezet) hasznos lesz. 
+A linkmátrix 1 sajátértékének multiplicitása és a webhez rendelt Markov-lánc között kapcsolat van. Itt kimondunk egy tételt \cite{irreducible_closed}, amelynek segítségével meghatározhatjuk az 1 sajátérték multiplicitását a linkmátrix (mint átmenetmátrix) bizonyos tulajdonságaiból. Ez a későbbiekben (\ref{alfa_sajatertek}. fejezet) hasznos lesz. 
 
 \begin{definicio}{Zárt részhalmaz}
 	Egy átmenetmátrix elemeinek $H \subseteq V$ kommunikációs osztálya zárt, ha minden $i \in H$ és $j \notin H$ állapotok esetén a $p_{i,j}$ átmenetvalószínűség nulla.  
@@ -321,8 +321,6 @@ A linkmátrix 1 sajátértékének multiplicitása és a webhez rendelt Markov-l
 \begin{tetel}
 	Egy átmenetmátrix esetén az 1 sajátérték multiplicitása megegyezik a mátrixban lévő irreducibilis zárt részhalmazok számával.
 \end{tetel}
-\noindent
-A bizonyítás az \cite{irreducible_closed}. forrásban található.
 
 \section{A sajátértékprobléma}
 
@@ -570,8 +568,8 @@ Látható, hogy minél kisebb ez a hányados, annál kisebb mértékben fog csö
 \[ 1 > |\lambda_2| \geq |\lambda_3| \geq \ldots \geq |\lambda_n|, \]
 ezért a fentebb említett legrosszabb eset a következőképpen módosul:
 \[ 1 / |\lambda_2| \approx 1. \]
-\noindent
-Minél közelebb van tehát a második legnagyobb sajátérték egyhez (a domináns sajátértékhez), annál lassabb lesz a konvergencia sebessége.
+
+Minél közelebb van tehát a második legnagyobb sajátérték egyhez (a domináns sajátértékhez), annál lassabb lesz a konvergencia sebessége. A Google mátrixra alkalmazott hatványiteráció konvergenciájának pontos sebességét a \ref{alfa_sajatertek} alfejezet végén adjuk meg, mivel ehhez a következő alfejezetben bizonyított ismeretek kellenek.
 
 \subsection{$\alpha$ mint sajátérték}\label{alfa_sajatertek}
 
@@ -685,9 +683,14 @@ A bizonyítás során azért nem foglalkoztunk az $\alpha = 1$ esettel, mert ekk
 
 A tétel feltétele, vagyis az, hogy a linkmátrixban van legalább kettő irreducibilis zárt részhalmaz ugyan nem teljesül minden web linkmátrixára, de a sok oldalból álló webek estén szinte bisztosan igaz lesz, a linkmátrix \ref{linkmatrix}. fejezet megjegyzésében említett ritkasága miatt.
 
-Láttuk tehát, hogy $\alpha$ a vizsgált mátrix második legnagyobb sajátértéke, ezért az \ref{konvergencia_sebesseg} alfejezet értelmében a hatványiteráció konvergenciájának sebessége függ $\alpha$-tól. Minél közelebb van egyhez, annál lassabb lesz a konvergencia.
+Láttuk tehát, hogy $\alpha$ a vizsgált mátrix második legnagyobb sajátértéke, ezért az \ref{konvergencia_sebesseg} alfejezet értelmében a hatványiteráció konvergenciájának sebessége függ $\alpha$-tól. Ezt a sebességet a következő tétel adja meg pontosan \cite{convergence_speed}:
 
-\vspace{0.2cm}\textbf{Megjegyzés:} Ha a második tétel feltétele nem is teljesül, az első tétel akkor is érvényes. Ez azt jelenti, hogy nem ismerjük ugyan pontosan a második legnagyobb sajátértéket (és ezzel együtt a konvergencia sebességét), de felülről tudjuk becsülni $\alpha$-val.
+\begin{tetel}
+	Legyen $\mathbf{\pi}$ a PageRank vektor, $\bx^i$ pedig a Google mátrixra alkalmazott hatványiteráció $i$. lépésének erdeménye. Ekkor $\exists C \in \mathbb{R}$:
+	\[ \Vert \bx^i - \mathbf{\pi} \Vert \leq C \alpha^i, \quad i = 1,2,\ldots \]
+\end{tetel}
+
+\textbf{Megjegyzés:} Ha a második tétel feltétele nem is teljesül, az első tétel akkor is érvényes. Ez azt jelenti, hogy nem ismerjük ugyan pontosan a második legnagyobb sajátértéket (és ezzel együtt a konvergencia sebességét), de felülről tudjuk becsülni $\alpha$-val.
 
 \section{Algoritmus a PageRank meghatározására}
 

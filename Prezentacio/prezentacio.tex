@@ -1,0 +1,226 @@
+\documentclass[]{beamer}
+% Class options include: notes, notesonly, handout, trans,
+%                        hidesubsections, shadesubsections,
+%                        inrow, blue, red, grey, brown
+
+% Theme for beamer presentation.
+\usepackage{beamerthemesplit} 
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{bm}
+\usepackage{caption}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+
+\newcommand{\bx}{\mathbf{x}}
+\newcommand{\be}{\mathbf{e}}
+\newcommand{\by}{\mathbf{y}}
+
+\newtheorem{tetel}{Tétel}
+
+\newcounter{definicioszam}
+\newenvironment{definicio}[1]
+{{\medskip}\noindent \stepcounter{definicioszam}
+{\bfseries{\thedefinicioszam. Definíció: \textit{#1.}}}}{\bigskip }
+
+\title{PageRank és kiszámolása}    % Enter your title between curly braces
+\author{Gáspár Tamás}                 % Enter your name between curly braces
+\date{2019 május 30.}
+
+\begin{document}
+
+% Creates title page of slide show using above information
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\section{Mi a PageRank?}
+
+\begin{frame}
+  \frametitle{A PageRank definíciója}   % Insert frame title between curly braces
+
+ A PageRank egy Sergei Brin és Larry Page által alkotott módszer arra, hogy weboldalak egy halmazát a köztük lévű linkek alapján rangsoroljuk.
+
+ A weboldalak halmaza (röviden web) legyen egy irányított gráf, ahol az irányított élek fejezik ki az oldalak közti linkeket.
+ 
+  \begin{figure}[h]
+ 	\begin{tikzpicture}[
+ 	roundnode/.style={circle, draw=green!60, fill=green!5, very thick, minimum size=7mm},
+ 	]
+ 	\centering
+ 	%Nodes
+ 	\node[roundnode]      (c1)                     {1};
+ 	\node[roundnode]      (c2)       [right=of c1] {2};
+ 	\node[roundnode]      (c3)       [below=of c2] {3};
+ 	\node[roundnode]      (c4)       [below=of c1] {4};
+ 	
+ 	%Lines
+ 	\draw[->,thick] (c1) -- (c2);
+ 	\draw[->,thick] (c2) -- (c3);
+ 	\draw[->,thick] (c4) -- (c2);
+ 	\draw[->,thick] (c4) -- (c3);
+ 	\end{tikzpicture}
+ 	\caption*{Egy 4 oldalból álló web}
+ \end{figure}
+ 
+\end{frame}
+
+\begin{frame}
+	\frametitle{A PageRank definíciója}
+	
+	\begin{definicio}{Weboldal PageRankja}
+		Legyen adott egy web, ahol $V$ az oldalak halmaza. Legyen $v_i \in V$ oldal PageRankja $r(v_i)$, az oldalról kimenő linkek száma pedig $ |v_i| $. Jelölje $B_i \subset V$ azon oldalak halmazát amelyen linkelnek $v_i$-re.
+		
+		Ekkor $v_i$ oldal PageRank-ja definíció szerint:
+		\[ r(v_i) = \sum_{v_j \in B_i} \frac{r(v_j)}{ |v_j| } \text{.} \]
+	\end{definicio}
+
+	Egy oldal fontossága azon múlik, hogy mennyi oldal linkel rá, és hogy ezek milyen fontosak.
+	
+	\underline{Megjegyzés:} Rekurzív definíció.
+\end{frame}
+
+\section{A linkmátrix, Markov-láncok}
+
+\begin{frame}
+	\frametitle{A linkmátrix}
+	
+	Az oldalak között kapcsolatot mutatja.
+	
+	\begin{definicio}{Linkmátrix}
+		\begin{equation*}
+		a_{i,j}=\begin{cases}
+		\frac{1}{ |v_i| }, & \text{ha $v_i$ linkel $v_j$-re,}\\
+		0, & \text{egyébként}.
+		\end{cases}
+		\end{equation*}
+	\end{definicio}
+
+Egy példa: web és a hozzá tartozó linkmátrix.
+\begin{minipage}{0.4\textwidth}
+	\centering
+	\begin{center}
+		\begin{tikzpicture}[
+		roundnode/.style={circle, draw=blue!60, fill=blue!5, very thick, minimum size=7mm},
+		]
+		%Nodes
+		\node[roundnode]      (c1)                     {1};
+		\node[roundnode]      (c2)       [right=of c1] {2};
+		\node[roundnode]      (c3)       [below=of c2] {3};
+		\node[roundnode]      (c4)       [below=of c1] {4};
+		
+		%Lines
+		\draw[->,thick] (c1) -- (c3);
+		\draw[->,thick] (c1) -- (c4);
+		\draw[->,thick] (c2) -- (c3);
+		\draw[->,thick] (c4) -- (c2);
+		\draw[->,thick] (c3) -- (c1);
+		\draw[->,thick] (c2) -- (c1);
+		\end{tikzpicture}
+	\end{center}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+	\begin{center}
+		\[
+		\begin{pmatrix}
+		0 & 0 & \frac{1}{2} & \frac{1}{2} \\  
+		\frac{1}{2} & 0 & \frac{1}{2} & 0 \\
+		1 & 0 & 0 & 0 \\
+		0 & 1 & 0 & 0 \\
+		\end{pmatrix}
+		\]
+	\end{center}
+\end{minipage}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Webhez rendelhető markov lánc}
+	
+	\underline{Megjegyzés:} A linkmátrix sztochasztikus lesz (kivétel: ha van lógó oldal, de ez egyszerű helyettesítéssel megszüntethető).
+	
+	\bigskip
+	
+	Minden webhez rendelhetünk egy Markov-láncot, melynek állapotai az oldalak, átmenetvalószínűségei pedig a linkmátrix megfelelő elemei (ez lesz az átmenetmátrix). 
+	
+	\bigskip
+	
+	A \textit{"véletlen szörföző"} egyenletes eloszlás szerint halad az oldalon lévő linkeken. 
+\end{frame}
+
+\begin{frame}
+	\frametitle{Definíció és a linkmátrix kapcsolata, PageRank vektor}
+	
+	Kapcsolat van a linkmátrix és a definícióból kapott egyenletrendszer között. Legyen $\bx$ az oldalak PageRank-jaiból álló sorvektor, ekkor:
+	\[ 
+	\bx = \bx A, 
+	\]
+	ami átalakítva
+	\[
+	\bx^T = A^T \bx^T. 
+	\]
+	
+	A fenti egyenlet mutatja, hogy a $\bx$ a webhez rendelt markov lánc invariáns eloszlása lesz, a lenti pedig azt, hogy az 1-hez
+	tartozó sajátvektor is (az $A^T$ mátrixban).
+	
+	\bigskip
+	\underline{Megjegyzés:} $\bx$-et vegyük úgy, hogy a komponensek összege 1.
+\end{frame}
+
+\section{Számolási módszerek, gondot okozó tényezők}
+
+\begin{frame}
+	\frametitle{A hatványiteráció}
+	
+	Hogyan számoljuk ki $\bx$-et? A pontos eredmény nem kivitelezhető, túl sok oldal. A megoldás a hatványiteráció:
+	\[ x^{i+1} = A^T x^i \]
+	
+	\underline{Probléma:} A hatványiteráció a domináns sajátértékhez konvergál, ilyen nem biztos hogy van (például -1, vagy 1 többszörös multiplicitással). Különálló \textit{"szubwebek"} esetén fordul elő.
+	
+	\bigskip
+	A linkmátrixon (és a Markov-láncon) módosítani kell úgy, hogy a domináns sajátérték garantált legyen.
+\end{frame}
+
+\begin{frame}
+	\frametitle{A linkmátrix módosítása: Google mátrix}
+	
+	Megközelítés a Markov-láncok irányából: Ha a Markov-lánc irreducibilis és aperiodikus, akkor biztosan egyértelmű lesz az invariáns eloszlás.
+	
+	\begin{definicio}{Google mátrix}
+		Legyen $A \in \mathbb{R}^{n \times n}$ egy web linkmátrixa, $S$ pedig egy egy olyan $n \times n$-es mátrix, melynek minden eleme $\frac{1}{n}$. Ekkor a Google mátrix definíció szerint
+		\[ G := \alpha A + (1-\alpha) S, \qquad \alpha \in [0,1] \]
+	\end{definicio}
+
+\vspace{-0.8cm}
+Példa: Egy linkmátrix és az $\alpha = 0,7$ paraméterrel kapott Google mátrix.
+\[A =
+\begin{pmatrix}
+0 & \frac{1}{2} & \frac{1}{2} & 0 \\
+\frac{1}{3} & 0 & \frac{1}{3} & \frac{1}{3} \\
+\frac{1}{3} & \frac{1}{3} & 0 & \frac{1}{3} \\
+0 & 0 & 1 & 0 \\
+\end{pmatrix},
+G = 
+\begin{pmatrix}
+0,\!038 & 0,\!463 & 0,\!463 & 0,\!038 \\
+0,\!321 & 0,\!038 & 0,\!321 & 0,\!321 \\
+0,\!321 & 0,\!321 & 0,\!38 & 0,\!321 \\
+0,\!038 & 0,\!038 & 0,\!888 & 0,\!038 \\
+\end{pmatrix}
+\]
+\end{frame}
+
+\begin{frame}
+	\frametitle{A Google mátrix}
+	
+	A Google mátrix szintén sztochasztikus, és a szükséges tulajdonságokat is teljesíti. A hatványiteráció ($G$ transzponáltján végezve) tehát mindig PageRank vektorhoz fog konvergálni.
+	
+	\bigskip
+	
+	\textbf{Megjegyzés:} \textit{(A helyettesítés mögötti heurisztika.)} \newline
+	A véletlen szörföző most már nem csak a linkeken keresztül juthat el a következő oldalra, hanem $1-\alpha$ valószínűséggel egy egyenletes eloszlás szerint választott véletlen oldalra ugrik.
+\end{frame}
+
+\end{document}

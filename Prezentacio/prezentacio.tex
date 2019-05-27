@@ -37,8 +37,6 @@
   \titlepage
 \end{frame}
 
-\section{Mi a PageRank?}
-
 \begin{frame}
   \frametitle{A PageRank definíciója}   % Insert frame title between curly braces
 
@@ -80,10 +78,8 @@
 
 	Egy oldal fontossága azon múlik, hogy mennyi oldal linkel rá, és hogy ezek milyen fontosak.
 	
-	\underline{Megjegyzés:} Rekurzív definíció.
+	\textbf{Megjegyzés:} Rekurzív definíció.
 \end{frame}
-
-\section{A linkmátrix, Markov-láncok}
 
 \begin{frame}
 	\frametitle{A linkmátrix}
@@ -139,7 +135,7 @@ Egy példa: web és a hozzá tartozó linkmátrix.
 \begin{frame}
 	\frametitle{Webhez rendelhető markov lánc}
 	
-	\underline{Megjegyzés:} A linkmátrix sztochasztikus lesz (kivétel: ha van lógó oldal, de ez egyszerű helyettesítéssel megszüntethető).
+	\textbf{Megjegyzés:} A linkmátrix sztochasztikus lesz (kivétel: ha van \textit{"lógó oldal"}, de ez egyszerű helyettesítéssel megszüntethető).
 	
 	\bigskip
 	
@@ -166,18 +162,16 @@ Egy példa: web és a hozzá tartozó linkmátrix.
 	tartozó sajátvektor is (az $A^T$ mátrixban).
 	
 	\bigskip
-	\underline{Megjegyzés:} $\bx$-et vegyük úgy, hogy a komponensek összege 1.
+	\textbf{Megjegyzés:} $\bx$-et vegyük úgy, hogy a komponensek összege 1.
 \end{frame}
-
-\section{Számolási módszerek, gondot okozó tényezők}
 
 \begin{frame}
 	\frametitle{A hatványiteráció}
 	
 	Hogyan számoljuk ki $\bx$-et? A pontos eredmény nem kivitelezhető, túl sok oldal. A megoldás a hatványiteráció:
-	\[ x^{i+1} = A^T x^i \]
+	\[ \bx^{i+1} = A^T \bx^i \]
 	
-	\underline{Probléma:} A hatványiteráció a domináns sajátértékhez konvergál, ilyen nem biztos hogy van (például -1, vagy 1 többszörös multiplicitással). Különálló \textit{"szubwebek"} esetén fordul elő.
+	\textbf{Probléma:} A hatványiteráció a domináns sajátértékhez konvergál, ilyen nem biztos hogy van (például -1, vagy 1 többszörös multiplicitással). Különálló \textit{"szubwebek"} esetén fordul elő.
 	
 	\bigskip
 	A linkmátrixon (és a Markov-láncon) módosítani kell úgy, hogy a domináns sajátérték garantált legyen.
@@ -219,8 +213,44 @@ G =
 	
 	\bigskip
 	
+	\textbf{Kérdés:} A konvergencia sebessége. A második legnagyobb sajátértéktől ($\lambda_2$) függ. Minél közelebb van ez 1-hez, annál lassabb.
+	
+	\bigskip
+	
 	\textbf{Megjegyzés:} \textit{(A helyettesítés mögötti heurisztika.)} \newline
 	A véletlen szörföző most már nem csak a linkeken keresztül juthat el a következő oldalra, hanem $1-\alpha$ valószínűséggel egy egyenletes eloszlás szerint választott véletlen oldalra ugrik.
+\end{frame}
+
+\begin{frame}
+	\frametitle{Az $\alpha$ paraméter jelentősége}
+	
+	\[ G := \alpha A + (1-\alpha) S, \qquad \alpha \in [0,1] \]
+	
+	Minden Google mátrixra és $\alpha$-ra: $\lambda_2 \leq \alpha$ (bizonyos feltételek* mellett $\lambda_2 = \alpha$).
+	
+	\begin{itemize}
+		\item Nagy $\alpha$ lelassítja konvergencia sebességet.
+		\item Kis $\alpha$ elnyomja a linkek jelentőségét (a véletlen szörföző $1-\alpha$ valószínűséggel nem a linkeken halad tovább).
+	\end{itemize}
+	
+	\bigskip
+	\textit{*: $A$-ban van legalább 2 irreducibilis zárt részhalmaz.}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Algoritmus a PageRank vektor meghatározására}
+	\begin{enumerate}
+		\item Adjuk meg az ($n$ oldalból álló) webhez tartozó linkmátrixot.
+		
+		\item Végezzük el a helyettesítést a \textit{"lógó oldalak"} kiküszöbölésére, azaz ha a linkmátrixban van csupa nulla sor, azt cseréljük le $1/n$ elemekből álló sorra.
+		
+		\item Válasszunk egy $\alpha \in (0,1)$ paramétert (kompromisszum). Konstruáljuk meg a Google mátrixot ezzel a paraméterrel:
+		\[G = \alpha A + (1-\alpha)S,\]
+		
+		\item Végezzük a hatványiterációt a $G^T$ mátrixon, amíg a két iterációs lépés közötti különbség nem csökken valami kicsi $\epsilon$ érték alá, vagy adjunk meg konkrét iterációs lépésszámot.
+		
+		\item Az iteráció eredménye a PageRank vektor közelítése, ahol az $i.$ komponens az $i.$ oldal fontosságát adja meg.
+	\end{enumerate}
 \end{frame}
 
 \end{document}
